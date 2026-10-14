@@ -122,6 +122,7 @@ def to_schema(jobs: list[dict], term: str, loc: str) -> pd.DataFrame:
             "is_remote": _remote(j),
             "date_posted": datetime.fromtimestamp(posted, tz=timezone.utc).date() if posted else None,
             "job_url": f"{BASE}/jobs/{j.get('id')}-{j.get('slug')}" if j.get("id") else None,
+            "job_type": j.get("jobType"),
             "min_exp": j.get("yearsExperienceMin"),
             "max_exp": j.get("yearsExperienceMax"),
             "salary": (j.get("compensation") or "").strip() or None,
@@ -162,8 +163,20 @@ def fetch(sess: requests.Session, url: str) -> tuple[str, str, list[dict], int]:
     return "blocked", f"429 after {len(config.BACKOFF_429)} retries", [], n429
 
 
-def scrape(terms: list[str], locations: list[str], max_pages: int = 2) -> tuple[pd.DataFrame, list[dict]]:
-    """Fetch every (role slug × location) page once; attribute rows to all terms sharing the slug."""
+JOB_ID_RE = re.compile(r"wellfound\.com/jobs/(\d+)")
+
+
+def seen_ids_from(urls) -> set[str]:
+    """Wellfound job ids from previously seen job URLs."""
+    return {m.group(1) for u in urls if isinstance(u, str) and (m := JOB_ID_RE.search(u))}
+
+
+def scrape(terms: list[str], locations: list[str], max_pages: int = 2,
+           seen_ids: set[str] | None = None) -> tuple[pd.DataFrame, list[dict]]:
+    """Fetch every (role slug × location) page once; attribute rows to all terms sharing the slug.
+
+    With seen_ids (incremental mode), stop paging a role/location at the first page
+    whose listings were all seen in earlier runs."""
     slug_terms: dict[str, list[str]] = {}
     for t in terms:
         for s in ROLE_SLUGS.get(t, []):
@@ -203,6 +216,9 @@ def scrape(terms: list[str], locations: list[str], max_pages: int = 2) -> tuple[
                 elif st not in ("ok", "empty"):
                     reason = f"page {page}: {st} {why}".strip()
                 if st != "ok" or not new:
+                    break
+                if seen_ids is not None and all(str(j.get("id")) in seen_ids for j in jobs):
+                    reason = (reason + f" stopped at page {page}: all ids already seen").strip()
                     break
             else:
                 reason = (reason + f" hit page cap ({max_pages}); more pages may exist").strip()

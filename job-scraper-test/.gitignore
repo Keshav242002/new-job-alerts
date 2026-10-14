@@ -11,3 +11,8 @@ out-*/
 *.html
 actions-results/
 wf-local/
+work/
+state/
+seen_jobs.csv
+new_jobs.csv
+run_history.csv

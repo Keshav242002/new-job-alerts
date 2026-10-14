@@ -166,6 +166,7 @@ def dedupe(df: pd.DataFrame) -> pd.DataFrame:
         best["libs"] = ";".join(sorted(g["source_lib"].unique()))
         best["search_terms"] = ";".join(sorted(g["search_term"].dropna().unique()))
         best["dup_count"] = len(g)
+        best["urls"] = ";".join(sorted({u for u in g["_url"] if u}))
         # experience: structured beats regex; otherwise smallest parsed min
         s = g[g["exp_source"] == "structured"]
         pool = s if len(s) else g[g["min_exp"].notna()]
@@ -219,22 +220,61 @@ def on_topic(title: str, desc: str, search_terms: str) -> bool:
     return not terms or any(TERM_FAMILY_RE[t].search(title) or TERM_FAMILY_RE[t].search(desc) for t in terms)
 
 
-def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp) -> pd.DataFrame:
+SKILL_RE = re.compile(r"\b(?:flutter|dart|python|django|fast\s?api|react(?:\.?js)?)\b", re.I)
+# Job type from the board's field when present, else from the title ("smart contract" is a skill, not a type).
+JOBTYPE_TITLE_RE = re.compile(
+    r"\b(?:intern(?:ship)?s?|part[\s\-]?time|freelanc\w*|(?<!smart )contract(?:ual|or)?|c2h|contract[\s\-]to[\s\-]hire)\b", re.I)
+JOBTYPE_FIELD_RE = re.compile(r"part[\s\-]?time|intern|contract|freelanc|temporary", re.I)
+FRESHER_TITLE_RE = re.compile(r"\b(?:intern(?:ship)?s?|trainee|freshers?)\b", re.I)
+SENIORITY_RE = re.compile(r"\b(?:senior|sr\.?|lead|staff|principal|architect|manager)\b", re.I)
+
+# Stable rule names (exclusion_reason may append details in parentheses).
+RULES = ["older_than_window", "no_skill_match", "job_type", "fresher_only", "seniority_title",
+         "min_exp>4", "fullstack_angular_vue_only"]
+
+
+def excluded_job_type(title: str, job_type) -> str | None:
+    if isinstance(job_type, str) and job_type.strip():
+        jt = job_type.lower()
+        if JOBTYPE_FIELD_RE.search(jt) and not re.search(r"full[\s\-]?time", jt):
+            return job_type.strip()
+    m = JOBTYPE_TITLE_RE.search(title)
+    return f"title: {m.group(0)}" if m else None
+
+
+def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> pd.DataFrame:
+    """window_hours: a number, or a per-row Series (e.g. the widest window among a job's sources)."""
     df = df.copy()
+    window_hours = config.HOURS_OLD if window_hours is None else window_hours
     text = df["title"].fillna("") + " \n " + df["description"].fillna("")
-    cutoff = ref_date.normalize() - pd.Timedelta(hours=config.HOURS_OLD)  # day granularity
+    hours = (window_hours.reindex(df.index) if isinstance(window_hours, pd.Series)
+             else pd.Series(float(window_hours), index=df.index))
+    cutoffs = (ref_date - pd.to_timedelta(hours, unit="h")).dt.normalize()  # date_posted is day-granular
+    job_types = df["job_type"] if "job_type" in df.columns else pd.Series([None] * len(df), index=df.index)
     reasons, flags = [], []
-    for t, title, mn, dp, st, desc in zip(text, df["title"].fillna(""), df["min_exp"], df["date_posted"],
-                                          df["search_terms"], df["description"].fillna("")):
+    for t, title, mn, mx, dp, st, desc, jt, cutoff in zip(
+            text, df["title"].fillna(""), df["min_exp"], df["max_exp"], df["date_posted"],
+            df["search_terms"], df["description"].fillna(""), job_types, cutoffs):
         r = []
+        if pd.notna(dp) and dp < cutoff:
+            r.append(f"older_than_window ({dp.date()})")
+        has_desc = bool(desc.strip())
+        if not SKILL_RE.search(t) and has_desc:
+            r.append("no_skill_match")
+        if (why := excluded_job_type(title, jt)):
+            r.append(f"job_type ({why})")
+        if (pd.notna(mx) and mx == 0) or FRESHER_TITLE_RE.search(title):
+            r.append("fresher_only")
+        if SENIORITY_RE.search(title) and not (pd.notna(mx) and mx <= 4):
+            r.append(f"seniority_title ({SENIORITY_RE.search(title).group(0)})")
         if pd.notna(mn) and mn > 4:
-            r.append(f"min_exp>{4} ({mn:g})")
+            r.append(f"min_exp>4 ({mn:g})")
         if FULLSTACK_RE.search(t) and ANGULAR_VUE_RE.search(t) and not REACT_RE.search(t) and not FLUTTER_RE.search(t):
             r.append("fullstack_angular_vue_only")
-        if pd.notna(dp) and dp < cutoff:
-            r.append(f"older_than_{config.HOURS_OLD}h ({dp.date()})")
         reasons.append("; ".join(r))
         f = []
+        if not has_desc and not SKILL_RE.search(title):
+            f.append("no_description")
         if pd.isna(mn):
             f.append("exp_unknown")
             if SENIOR_RE.search(title):
@@ -301,7 +341,7 @@ def main(d: Path) -> None:
     kept = merged_all[merged_all["exclusion_reason"] == ""].drop(columns=["exclusion_reason"])
     kept.to_csv(d / "merged.csv", index=False)
     excluded.to_csv(d / "excluded.csv", index=False)
-    stale_mask = excluded["exclusion_reason"].str.contains("older_than_")
+    stale_mask = excluded["exclusion_reason"].str.contains("older_than_window")
     smoke = d.name == "smoke"
 
     R: list[str] = [f"# Job scraper comparison — {'smoke test' if smoke else 'full run'}\n",

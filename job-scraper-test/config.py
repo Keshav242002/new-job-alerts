@@ -97,10 +97,12 @@ DISABLED = {
 }
 
 
-def google_query(term: str, location: str) -> str:
+def google_query(term: str, location: str, hours: int = 72) -> str:
     where = "India" if location in ("India", "Remote") else f"{location}, India"
     remote = " remote" if location == "Remote" else ""
-    return f"{term}{remote} jobs in {where} since 3 days ago"
+    days = max(1, -(-hours // 24))
+    since = "since yesterday" if days == 1 else f"in the last {days} days"
+    return f"{term}{remote} jobs in {where} {since}"
 
 # Stop querying a site after this many consecutive blocked/captcha results (rest marked "skipped").
 BLOCK_STREAK_LIMIT = 3
@@ -108,3 +110,31 @@ BLOCK_STREAK_LIMIT = 3
 # Wellfound (plain HTTP role pages; see wellfound.py for role/location slug maps)
 WELLFOUND_DELAY_RANGE = (3, 6)
 WELLFOUND_MAX_PAGES = 10  # pages aren't date-sorted; walk until no new ids (cap)
+
+
+# ---------------------------------------------------------------- production
+# Source -> (library, site). Decided after the comparison + Actions feasibility tests.
+PROD_SOURCES = {
+    "linkedin": ("jobdrop", "linkedin"),
+    "indeed": ("jobspy", "indeed"),
+    "naukri": ("jobspy", "naukri"),   # no hours_old (JOBSPY_NAUKRI_RELEVANCE); date-filtered in process.py
+    "google": ("jobdrop", "google"),
+    "wellfound": ("wellfound", "wellfound"),
+}
+# Which sources each scheduled run fetches (see SCHEDULE.md).
+PROD_RUNS = {
+    "morning": ["linkedin", "indeed", "naukri", "google", "wellfound"],
+    "evening": ["linkedin", "indeed", "naukri"],
+}
+# Fetch window = time since the source's last successful run, at least 24h; 72h on its first run.
+MIN_WINDOW_HOURS = 24
+FIRST_RUN_WINDOW_HOURS = 72
+
+# Wellfound modes: "incremental" = up to 5 pages per role/location, stop at the first page whose ids
+# are all already in seen_jobs; "full" = 10-page cap (Sundays only when mode is "auto").
+WELLFOUND_INCREMENTAL_MAX_PAGES = 5
+WELLFOUND_FULL_MAX_PAGES = 10
+WELLFOUND_FULL_WEEKDAY = 6  # Sunday, in IST
+SEEN_RETENTION_DAYS = 90  # drop seen_jobs entries not seen for this long
+NEW_JOBS_DESCRIPTION_CHARS = 600
+BROWSER_CONNECT_RETRIES = 2  # retries for headless Chrome 'Failed to connect to browser'

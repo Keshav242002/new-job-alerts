@@ -1,0 +1,89 @@
+name: Job alerts pipeline
+
+# Public repo hygiene: no artifacts; logs/summaries show counts and errors only.
+# Scraped data is pushed to the private data repo (DATA_REPO_TOKEN: fine-grained,
+# contents read/write on Keshav242002/job-alerts-data only).
+on:
+  workflow_dispatch:
+    inputs:
+      run:
+        description: "Which run (sources per SCHEDULE.md)"
+        type: choice
+        options: [morning, evening]
+        default: morning
+      wellfound_mode:
+        description: "Wellfound mode"
+        type: choice
+        options: [auto, incremental, full]
+        default: auto
+
+permissions:
+  contents: write  # runs/latest.md keep-alive commit to this repo
+
+concurrency:
+  group: job-alerts-pipeline
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out private data repo
+        uses: actions/checkout@v4
+        with:
+          repository: Keshav242002/job-alerts-data
+          token: ${{ secrets.DATA_REPO_TOKEN }}
+          path: data
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Ensure Google Chrome (no Camoufox)
+        run: |
+          if ! command -v google-chrome >/dev/null; then
+            wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            sudo apt-get update -q && sudo apt-get install -y -q ./google-chrome-stable_current_amd64.deb
+          fi
+          google-chrome --version
+
+      - name: Create venvs
+        working-directory: job-scraper-test
+        run: |
+          python -m venv venv-jobspy && venv-jobspy/bin/pip install -q -r requirements-jobspy.txt
+          python -m venv venv-jobdrop && venv-jobdrop/bin/pip install -q -r requirements-jobdrop.txt
+
+      - name: Run pipeline
+        id: pipeline
+        working-directory: job-scraper-test
+        run: |
+          venv-jobspy/bin/python pipeline.py --run "${{ inputs.run }}" \
+            --wellfound-mode "${{ inputs.wellfound_mode }}" \
+            --data-dir ../data --public-dir .. \
+            || echo "PIPELINE_FAILED=1" >> "$GITHUB_ENV"
+
+      - name: Push data (private repo)
+        working-directory: data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A seen_jobs.csv new_jobs.csv run_history.csv state
+          if git diff --cached --quiet; then echo "no data changes"; exit 0; fi
+          git commit -q -m "${{ inputs.run }} run $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q
+
+      - name: Push runs/latest.md (public keep-alive)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/latest.md
+          if git diff --cached --quiet; then echo "no summary changes"; exit 0; fi
+          git commit -q -m "runs: ${{ inputs.run }} $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull -q --rebase && git push -q
+
+      - name: Fail if every source failed
+        if: env.PIPELINE_FAILED == '1'
+        run: exit 1

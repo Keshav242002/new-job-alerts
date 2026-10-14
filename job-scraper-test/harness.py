@@ -28,7 +28,7 @@ import config
 
 SCHEMA = [
     "source_lib", "site", "title", "company", "location", "is_remote", "date_posted",
-    "job_url", "min_exp", "max_exp", "salary", "description", "search_term", "search_location",
+    "job_url", "job_type", "min_exp", "max_exp", "salary", "description", "search_term", "search_location",
 ]
 
 HERE = Path(__file__).resolve().parent
@@ -46,14 +46,15 @@ def _worker(lib: str, site: str, term: str, loc: str, out: str) -> None:
     mod = importlib.import_module(lib)
 
     remote = loc == "Remote"
+    hours_old = int(os.environ.get("JOB_HOURS_OLD") or config.HOURS_OLD)
     kwargs = dict(
         site_name=[site],
         search_term=term,
-        google_search_term=config.google_query(term, loc),
+        google_search_term=config.google_query(term, loc, hours_old),
         location="India" if remote else loc,
         is_remote=remote,
         results_wanted=config.RESULTS_WANTED,
-        hours_old=config.HOURS_OLD,
+        hours_old=hours_old,
         country_indeed=config.COUNTRY.lower(),
         verbose=2,
     )
@@ -84,6 +85,11 @@ def _worker(lib: str, site: str, term: str, loc: str, out: str) -> None:
 CAPTCHA_RE = re.compile(r"captcha|challenge|cloudflare|datadome|unusual traffic|/sorry/|verify you are human|px-captcha", re.I)
 BLOCKED_RE = re.compile(r"\b(429|403|999)\b|rate.?limit|too many requests|blocked|forbidden|access denied", re.I)
 ERRLINE_RE = re.compile(r"(ERROR|Traceback|Exception|Error:)", re.I)
+
+
+def public_reason(reason: str) -> str:
+    """Error text safe for public logs: no URLs (they can identify jobs)."""
+    return re.sub(r"https?://\S+|www\.\S+", "<url>", reason or "")
 
 
 def classify(rows: int, timed_out: bool, error: str | None, log_text: str) -> tuple[str, str]:
@@ -152,6 +158,7 @@ def normalize(df: pd.DataFrame, lib: str, site: str, term: str, loc: str) -> pd.
         "is_remote": g("is_remote"),
         "date_posted": pd.to_datetime(g("date_posted"), errors="coerce").dt.date,
         "job_url": g("job_url"),
+        "job_type": g("job_type"),
         "min_exp": exp.map(lambda t: t[0]),
         "max_exp": exp.map(lambda t: t[1]),
         "salary": df.apply(_salary, axis=1) if {"min_amount", "max_amount"} & set(df.columns) else None,
@@ -213,14 +220,25 @@ def run_one(lib: str, site: str, term: str, loc: str, out_dir: Path) -> dict:
     backoff = config.BACKOFF_429 if site in config.BACKOFF_SITES else []
     t0 = time.perf_counter()
     n429_total = 0
-    for attempt in range(len(backoff) + 1):
+    browser_retries = 0
+    attempt = 0
+    while True:
         log_path = logs / (f"{slug}.log" if attempt == 0 else f"{slug}.retry{attempt}.log")
         df, error, timed_out, log_text, n429 = _attempt(lib, site, term, loc, parts / f"{slug}.raw.pkl", log_path)
         n429_total += n429
-        if n429 and len(df) == 0 and attempt < len(backoff):
-            print(f"  [{lib} {site}] 429 on {term!r}/{loc}; backing off {backoff[attempt]}s "
-                  f"(retry {attempt + 1}/{len(backoff)})", flush=True)
-            time.sleep(backoff[attempt])
+        # headless Chrome sometimes isn't ready in time on cold start; a quick retry usually works
+        if (len(df) == 0 and "Failed to connect to browser" in (error or "")
+                and browser_retries < config.BROWSER_CONNECT_RETRIES):
+            browser_retries += 1
+            attempt += 1
+            time.sleep(5)
+            continue
+        if n429 and len(df) == 0 and attempt - browser_retries < len(backoff):
+            wait = backoff[attempt - browser_retries]
+            print(f"  [{lib} {site}] 429 on {term!r}/{loc}; backing off {wait}s "
+                  f"(retry {attempt - browser_retries + 1}/{len(backoff)})", flush=True)
+            time.sleep(wait)
+            attempt += 1
             continue
         break
     runtime = time.perf_counter() - t0  # includes backoff sleeps
@@ -231,7 +249,7 @@ def run_one(lib: str, site: str, term: str, loc: str, out_dir: Path) -> dict:
     rec = {
         "lib": lib, "site": site, "search_term": term, "search_location": loc,
         "status": status, "rows": len(norm), "runtime_s": round(runtime, 1), "reason": reason,
-        "n429": n429_total, "attempts": attempt + 1,
+        "n429": n429_total, "attempts": attempt + 1, "browser_retries": browser_retries,
     }
     rec_path.write_text(json.dumps(rec))
     return rec
@@ -270,7 +288,10 @@ def run(lib: str) -> None:
     ap.add_argument("--terms", help="override search terms (semicolon-separated)")
     ap.add_argument("--locations", help="override locations for non-LinkedIn sites (semicolon-separated)")
     ap.add_argument("--linkedin-locations", help="override LinkedIn locations (semicolon-separated)")
+    ap.add_argument("--hours-old", type=int, help="fetch window in hours (default config.HOURS_OLD)")
     args = ap.parse_args()
+    if args.hours_old:
+        os.environ["JOB_HOURS_OLD"] = str(args.hours_old)  # inherited by worker subprocesses
 
     sites = args.sites.split(",") if args.sites else config.SITES[lib]
     out_dir = Path(args.out or ("smoke" if args.smoke else ".")).resolve()
@@ -310,7 +331,7 @@ def run(lib: str) -> None:
                 records.append(rec)
                 print(f"[{lib} {len(records)}/{total}] {site:<15} {term!r:<32} {loc:<10} "
                       f"{rec['status']:<8} rows={rec['rows']:<3} {rec['runtime_s']:>6.1f}s "
-                      f"429s={rec.get('n429', 0)} {rec['reason'][:80]}", flush=True)
+                      f"429s={rec.get('n429', 0)} {public_reason(rec['reason'])[:80]}", flush=True)
 
     threads = [threading.Thread(target=lane_worker, args=(ls,)) for ls in lanes.values()]
     for t in threads:
