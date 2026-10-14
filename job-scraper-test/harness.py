@@ -28,7 +28,7 @@ import config
 
 SCHEMA = [
     "source_lib", "site", "title", "company", "location", "is_remote", "date_posted",
-    "job_url", "min_exp", "max_exp", "description", "search_term", "search_location",
+    "job_url", "min_exp", "max_exp", "salary", "description", "search_term", "search_location",
 ]
 
 HERE = Path(__file__).resolve().parent
@@ -127,6 +127,17 @@ def _structured_exp(val) -> tuple[float | None, float | None]:
     return (float(m.group(1)), None) if m else (None, None)
 
 
+def _salary(row) -> str | None:
+    lo, hi = row.get("min_amount"), row.get("max_amount")
+    if pd.isna(lo) and pd.isna(hi):
+        return None
+    fmt = lambda v: "" if pd.isna(v) else f"{v:,.0f}"  # noqa: E731
+    rng = fmt(lo) if pd.isna(hi) or lo == hi else f"{fmt(lo)}-{fmt(hi)}".strip("-")
+    cur = row.get("currency") if isinstance(row.get("currency"), str) else ""
+    per = row.get("interval") if isinstance(row.get("interval"), str) else ""
+    return " ".join(x for x in (cur, rng, per) if x)
+
+
 def normalize(df: pd.DataFrame, lib: str, site: str, term: str, loc: str) -> pd.DataFrame:
     if df is None or df.empty:
         return pd.DataFrame(columns=SCHEMA)
@@ -143,6 +154,7 @@ def normalize(df: pd.DataFrame, lib: str, site: str, term: str, loc: str) -> pd.
         "job_url": g("job_url"),
         "min_exp": exp.map(lambda t: t[0]),
         "max_exp": exp.map(lambda t: t[1]),
+        "salary": df.apply(_salary, axis=1) if {"min_amount", "max_amount"} & set(df.columns) else None,
         "description": g("description").map(
             lambda s: s[: config.DESCRIPTION_MAX_CHARS] if isinstance(s, str) else None),
         "search_term": term,

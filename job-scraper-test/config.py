@@ -104,3 +104,7 @@ def google_query(term: str, location: str) -> str:
 
 # Stop querying a site after this many consecutive blocked/captcha results (rest marked "skipped").
 BLOCK_STREAK_LIMIT = 3
+
+# Wellfound (plain HTTP role pages; see wellfound.py for role/location slug maps)
+WELLFOUND_DELAY_RANGE = (3, 6)
+WELLFOUND_MAX_PAGES = 10  # pages aren't date-sorted; walk until no new ids (cap)

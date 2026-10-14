@@ -10,3 +10,4 @@ out-*/
 *.pkl
 *.html
 actions-results/
+wf-local/
