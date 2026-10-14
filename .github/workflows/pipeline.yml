@@ -70,7 +70,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A seen_jobs.csv new_jobs.csv run_history.csv state
+          git add -A seen_jobs.csv new_jobs.csv run_history.csv last_run_queries.csv state
           if git diff --cached --quiet; then echo "no data changes"; exit 0; fi
           git commit -q -m "${{ inputs.run }} run $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q

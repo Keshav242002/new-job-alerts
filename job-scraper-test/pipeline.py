@@ -3,7 +3,7 @@
     python pipeline.py --run morning --data-dir ../data --public-dir ..
 
 Data dir (private repo checkout): seen_jobs.csv, new_jobs.csv, run_history.csv,
-state/last_success.json. Public dir: runs/latest.md (counts only — no titles,
+last_run_queries.csv, state/last_success.json. Public dir: runs/latest.md (counts only — no titles,
 companies or URLs; it doubles as the schedule keep-alive commit).
 
 Each scraper runs as its own process in its library's venv; the fetch window per
@@ -183,6 +183,8 @@ def main() -> int:
     if ok_sources:
         W.mark_success(ok_sources, now.to_pydatetime().replace(tzinfo=timezone.utc), state)
     hist = summary.assign(run_utc=stamp, run=args.run, window_h=summary["source"].map(windows))
+    # per-query statuses of this run (private): for debugging a degrading source
+    runs.assign(run_utc=stamp, run=args.run).to_csv(args.data_dir / "last_run_queries.csv", index=False)
     hist_path = args.data_dir / "run_history.csv"
     hist.to_csv(hist_path, mode="a", index=False, header=not hist_path.exists())
 
