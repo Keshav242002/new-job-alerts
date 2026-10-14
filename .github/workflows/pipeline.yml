@@ -5,8 +5,8 @@ name: Job alerts pipeline
 # contents read/write on Keshav242002/job-alerts-data only).
 on:
   schedule:
-    - cron: "15 3 * * *"   # 08:45 IST — morning: LinkedIn, Naukri, Wellfound, ATS
-    - cron: "15 13 * * *"  # 18:45 IST — evening: LinkedIn, Naukri
+    - cron: "15 3 * * *"   # 08:45 IST — morning: LinkedIn, Wellfound (+ best-effort Naukri, ATS)
+    - cron: "15 13 * * *"  # 18:45 IST — evening: LinkedIn only
   workflow_dispatch:
     inputs:
       run:
