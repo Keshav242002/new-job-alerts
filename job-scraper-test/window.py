@@ -1,8 +1,8 @@
 """Fetch window per source: time since that source's last successful run.
 
-Rules: first run of a source -> FIRST_RUN_WINDOW_HOURS (72); otherwise
+Rules: first run of a source -> FIRST_RUN_WINDOW_HOURS (72; ATS: 30 days); otherwise
 max(MIN_WINDOW_HOURS (24), hours since last success). Tracked per source because
-Google and Wellfound run once a day while LinkedIn/Indeed/Naukri run twice.
+Wellfound and ATS run once a day while LinkedIn/Naukri run twice.
 
 State file (committed by the pipeline): state/last_success.json
     {"linkedin": "2026-10-15T03:15:00+00:00", ...}
@@ -31,7 +31,7 @@ def window_hours(source: str, now: datetime | None = None, path: Path = STATE_PA
     now = now or datetime.now(timezone.utc)
     last = _load(path).get(source)
     if not last:
-        return config.FIRST_RUN_WINDOW_HOURS
+        return config.FIRST_RUN_WINDOW_HOURS_BY_SOURCE.get(source, config.FIRST_RUN_WINDOW_HOURS)
     elapsed = (now - datetime.fromisoformat(last)).total_seconds() / 3600
     return max(config.MIN_WINDOW_HOURS, math.ceil(elapsed))
 

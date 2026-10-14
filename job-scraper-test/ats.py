@@ -78,9 +78,12 @@ def parse_greenhouse(data: dict, company: str) -> list[dict]:
         if not is_india(*locs):
             continue
         loc = (j.get("location") or {}).get("name")
+        # first_published = original post date; updated_at changes on any edit (approximate only)
+        published = j.get("first_published")
         out.append({"title": j.get("title"), "company": company, "location": loc,
                     "is_remote": bool(re.search(r"remote", loc or "", re.I)),
-                    "date_posted": _date(j.get("first_published") or j.get("updated_at")),
+                    "date_posted": _date(published or j.get("updated_at")),
+                    "date_approx": not published,
                     "job_url": j.get("absolute_url"), "job_type": None,
                     "salary": None, "description": _text(j.get("content"))})
     return out

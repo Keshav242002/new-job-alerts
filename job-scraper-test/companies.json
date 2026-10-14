@@ -7,7 +7,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 112,
     "stack_india_jobs_at_bootstrap": 63,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Databricks",
@@ -17,7 +19,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 94,
     "stack_india_jobs_at_bootstrap": 47,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Tekion",
@@ -27,7 +31,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 71,
     "stack_india_jobs_at_bootstrap": 19,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "PubMatic",
@@ -37,7 +43,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 36,
     "stack_india_jobs_at_bootstrap": 19,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "MongoDB",
@@ -47,7 +55,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 86,
     "stack_india_jobs_at_bootstrap": 12,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Zeta Global",
@@ -57,7 +67,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 40,
     "stack_india_jobs_at_bootstrap": 11,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Druva",
@@ -67,7 +79,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 13,
     "stack_india_jobs_at_bootstrap": 8,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Fivetran",
@@ -77,7 +91,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 24,
     "stack_india_jobs_at_bootstrap": 7,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Smart Working Solutions",
@@ -87,7 +103,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 16,
     "stack_india_jobs_at_bootstrap": 7,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Acceldata",
@@ -97,7 +115,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 14,
     "stack_india_jobs_at_bootstrap": 7,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Hevo Data",
@@ -107,7 +127,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 52,
     "stack_india_jobs_at_bootstrap": 6,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Rubrik",
@@ -117,7 +139,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 36,
     "stack_india_jobs_at_bootstrap": 6,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Zenoti",
@@ -127,7 +151,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 34,
     "stack_india_jobs_at_bootstrap": 6,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Toast",
@@ -137,7 +163,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 16,
     "stack_india_jobs_at_bootstrap": 6,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Zscaler",
@@ -147,7 +175,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 63,
     "stack_india_jobs_at_bootstrap": 5,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "GitLab",
@@ -157,7 +187,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 29,
     "stack_india_jobs_at_bootstrap": 5,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Glance",
@@ -167,7 +199,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 20,
     "stack_india_jobs_at_bootstrap": 5,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Agoda",
@@ -177,7 +211,33 @@
     "active": true,
     "india_jobs_at_bootstrap": 13,
     "stack_india_jobs_at_bootstrap": 5,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "SingleStore",
+    "ats": "greenhouse",
+    "board_slug": "singlestore",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 8,
+    "stack_india_jobs_at_bootstrap": 5,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "AiPrise",
+    "ats": "ashby",
+    "board_slug": "aiprise",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 5,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "UiPath",
@@ -187,7 +247,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 5,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Celonis",
@@ -197,7 +259,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 32,
     "stack_india_jobs_at_bootstrap": 4,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "ChargePoint",
@@ -207,7 +271,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 16,
     "stack_india_jobs_at_bootstrap": 4,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "SigNoz",
@@ -217,7 +283,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 14,
     "stack_india_jobs_at_bootstrap": 4,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Plane",
@@ -227,7 +295,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 10,
     "stack_india_jobs_at_bootstrap": 4,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Paytm",
@@ -237,7 +307,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 171,
     "stack_india_jobs_at_bootstrap": 3,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Stripe",
@@ -247,7 +319,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 46,
     "stack_india_jobs_at_bootstrap": 3,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Smartsheet",
@@ -257,7 +331,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 21,
     "stack_india_jobs_at_bootstrap": 3,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Safe Security",
@@ -267,7 +343,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 16,
     "stack_india_jobs_at_bootstrap": 3,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "6sense",
+    "ats": "greenhouse",
+    "board_slug": "6sense",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 12,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Coinbase",
@@ -277,7 +367,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 9,
     "stack_india_jobs_at_bootstrap": 3,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Cardboard",
+    "ats": "ashby",
+    "board_slug": "cardboard",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "ConverseNow",
@@ -287,7 +391,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 3,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Anyscale",
@@ -297,7 +403,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 3,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Sumo Logic",
@@ -307,7 +415,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 3,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Sarvam AI",
@@ -317,7 +427,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 42,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Tide",
@@ -327,17 +439,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 41,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Atlys",
     "ats": "ashby",
     "board_slug": "atlys",
-    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
     "active": true,
     "india_jobs_at_bootstrap": 33,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Sigmoid",
@@ -347,7 +463,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 31,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Twilio",
@@ -357,17 +475,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 18,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Fampay",
     "ats": "lever",
     "board_slug": "fampay",
-    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "discovered_via": "vcbacked.co YC companies in Bengaluru/Gurugram, slug verified via API",
     "active": true,
     "india_jobs_at_bootstrap": 17,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "TrueFoundry",
@@ -377,7 +499,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 13,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "CloudSEK",
@@ -387,7 +511,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 12,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Gushwork",
@@ -397,7 +523,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 8,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Coursera",
@@ -407,7 +535,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Get Well Network",
@@ -417,7 +547,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "New Relic",
@@ -427,7 +559,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Coupa",
@@ -437,7 +571,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 6,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "GoDaddy",
+    "ats": "greenhouse",
+    "board_slug": "godaddy",
+    "discovered_via": "web search: jobs.ashbyhq.com / boards.greenhouse.io role x city queries, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 6,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Together AI",
@@ -447,7 +595,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 6,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Adyen",
@@ -457,7 +607,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "YugabyteDB",
@@ -467,7 +619,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 2,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Meesho",
@@ -477,7 +631,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 58,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "HighRadius",
@@ -487,7 +643,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 49,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "InMobi",
@@ -497,7 +655,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 41,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Instawork",
@@ -507,7 +667,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 37,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "HackerRank",
@@ -517,7 +679,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 20,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "MindTickle",
@@ -527,7 +691,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 18,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Elastic",
@@ -537,7 +703,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 17,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "KKR",
@@ -548,6 +716,8 @@
     "india_jobs_at_bootstrap": 17,
     "stack_india_jobs_at_bootstrap": 1,
     "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0,
     "note": "slug 'stage' is KKR's board (not STAGE OTT); kept, KKR hires in India"
   },
   {
@@ -558,7 +728,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 16,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "LinkedIn",
@@ -568,17 +740,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 14,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "SpotDraft",
     "ats": "ashby",
     "board_slug": "spotdraft",
-    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
     "active": true,
     "india_jobs_at_bootstrap": 11,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Netomi",
@@ -588,7 +764,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 10,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "ClickHouse",
@@ -598,7 +776,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 9,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "100ms",
@@ -608,7 +788,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 8,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Snowflake",
@@ -618,7 +800,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Airbnb",
@@ -628,7 +812,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Gainsight",
@@ -638,7 +824,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Starburst",
@@ -648,7 +836,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Atlan",
@@ -658,7 +848,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 4,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Meltplan",
@@ -668,7 +860,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 4,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Samsara",
@@ -678,7 +872,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 4,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Turing",
@@ -688,7 +884,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 4,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Notion",
@@ -698,7 +896,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 3,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Astronomer",
@@ -708,7 +908,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Smallest AI",
@@ -718,7 +920,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 1,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Zeta",
@@ -728,17 +932,45 @@
     "active": true,
     "india_jobs_at_bootstrap": 23,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Bureau",
     "ats": "ashby",
     "board_slug": "bureau",
-    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
     "active": true,
     "india_jobs_at_bootstrap": 19,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Jobgether",
+    "ats": "lever",
+    "board_slug": "jobgether",
+    "discovered_via": "web search: jobs.lever.co Mobile Application Developer Gurugram",
+    "active": true,
+    "india_jobs_at_bootstrap": 15,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Human Archive",
+    "ats": "ashby",
+    "board_slug": "humanarchive",
+    "discovered_via": "YC India jobs board (ycombinator.com/jobs/role/software-engineer/india), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 12,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Datadog",
@@ -748,7 +980,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 11,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Commvault",
@@ -758,7 +992,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 10,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Groww",
@@ -768,7 +1004,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 10,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Zocdoc",
@@ -778,7 +1016,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 10,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Nium",
@@ -788,7 +1028,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 9,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Airwallex",
@@ -798,7 +1040,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "CRED",
@@ -808,7 +1052,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "ElevenLabs",
@@ -818,7 +1064,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Bolna",
@@ -828,7 +1076,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 6,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Docsumo",
@@ -838,7 +1088,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 6,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "LaunchDarkly",
@@ -848,7 +1100,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 6,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Cube",
+    "ats": "ashby",
+    "board_slug": "cube",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Observe.AI",
@@ -858,7 +1124,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Zuora",
@@ -868,7 +1136,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 5,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Mixpanel",
@@ -878,7 +1148,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 4,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Cartesia",
+    "ats": "ashby",
+    "board_slug": "cartesia",
+    "discovered_via": "web search: jobs.ashbyhq.com / boards.greenhouse.io role x city queries, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 3,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Composio",
@@ -888,7 +1172,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 3,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Temporal",
@@ -898,7 +1184,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 3,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Workato",
@@ -908,7 +1196,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 3,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Amplitude",
@@ -918,7 +1208,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Clueso",
+    "ats": "ashby",
+    "board_slug": "clueso",
+    "discovered_via": "vcbacked.co YC companies in Bengaluru/Gurugram, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Cockroach Labs",
@@ -928,7 +1232,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Cresta",
@@ -938,7 +1244,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Oyster",
@@ -948,7 +1256,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Pocket FM",
@@ -958,7 +1268,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Redis",
@@ -968,7 +1280,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Thoughtworks",
@@ -978,7 +1292,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Vercel",
@@ -988,7 +1304,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Cloudflare",
@@ -998,7 +1316,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 1,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Duolingo",
@@ -1008,7 +1328,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 1,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Figma",
@@ -1018,7 +1340,21 @@
     "active": true,
     "india_jobs_at_bootstrap": 1,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "LiteLLM",
+    "ats": "ashby",
+    "board_slug": "litellm",
+    "discovered_via": "YC India jobs board (ycombinator.com/jobs/role/software-engineer/india), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 1,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Spotify",
@@ -1028,7 +1364,9 @@
     "active": true,
     "india_jobs_at_bootstrap": 1,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   },
   {
     "name": "Xendit",
@@ -1038,6 +1376,104 @@
     "active": true,
     "india_jobs_at_bootstrap": 1,
     "stack_india_jobs_at_bootstrap": 0,
-    "verified": "2026-10-14"
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Eternal",
+    "ats": "lever",
+    "board_slug": "eternal",
+    "discovered_via": "web search: jobs.ashbyhq.com / boards.greenhouse.io role x city queries, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 0,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Fulfil",
+    "ats": "greenhouse",
+    "board_slug": "fulfil",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 0,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "FurtherAI",
+    "ats": "ashby",
+    "board_slug": "furtherai",
+    "discovered_via": "web search: jobs.ashbyhq.com / boards.greenhouse.io role x city queries, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 0,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Nanonets",
+    "ats": "ashby",
+    "board_slug": "nanonets",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 0,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Raven",
+    "ats": "greenhouse",
+    "board_slug": "raven",
+    "discovered_via": "vcbacked.co YC companies in Bengaluru/Gurugram, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 0,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Shelf",
+    "ats": "ashby",
+    "board_slug": "shelf",
+    "discovered_via": "vcbacked.co YC companies in Bengaluru/Gurugram, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 0,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Slice",
+    "ats": "greenhouse",
+    "board_slug": "slice",
+    "discovered_via": "web search: jobs.ashbyhq.com / boards.greenhouse.io role x city queries, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 0,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
+  },
+  {
+    "name": "Tsenta",
+    "ats": "ashby",
+    "board_slug": "tsenta",
+    "discovered_via": "fueler.io: Bengaluru startups hiring in 2026, slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 0,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14",
+    "first_scanned": "2026-10-14",
+    "kept_jobs_total": 0
   }
 ]

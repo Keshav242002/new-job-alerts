@@ -116,20 +116,22 @@ WELLFOUND_MAX_PAGES = 10  # pages aren't date-sorted; walk until no new ids (cap
 # Source -> (library, site). Decided after the comparison + Actions feasibility tests.
 PROD_SOURCES = {
     "linkedin": ("jobdrop", "linkedin"),
-    "indeed": ("jobspy", "indeed"),
+    # "indeed": ("jobspy", "indeed"),  # removed from the pipeline 2026-10-14 (code kept; re-enable here)
     "naukri": ("jobspy", "naukri"),   # no hours_old (JOBSPY_NAUKRI_RELEVANCE); date-filtered in process.py
-    "google": ("jobdrop", "google"),
+    # "google": ("jobdrop", "google"),  # dropped 2026-10-14: Google CAPTCHAs the Actions runner (code kept)
     "wellfound": ("wellfound", "wellfound"),
     "ats": ("ats", "ats"),             # Greenhouse / Lever / Ashby boards from companies.json
 }
 # Which sources each scheduled run fetches (see SCHEDULE.md).
 PROD_RUNS = {
-    "morning": ["linkedin", "indeed", "naukri", "google", "wellfound", "ats"],
-    "evening": ["linkedin", "indeed", "naukri"],
+    "morning": ["linkedin", "naukri", "wellfound", "ats"],
+    "evening": ["linkedin", "naukri"],
 }
 # Fetch window = time since the source's last successful run, at least 24h; 72h on its first run.
 MIN_WINDOW_HOURS = 24
 FIRST_RUN_WINDOW_HOURS = 72
+# ATS postings stay live for weeks: backfill 30 days on the source's first run.
+FIRST_RUN_WINDOW_HOURS_BY_SOURCE = {"ats": 30 * 24}
 
 # Wellfound modes: "incremental" = up to 5 pages per role/location, stop at the first page whose ids
 # are all already in seen_jobs; "full" = 10-page cap (Sundays only when mode is "auto").

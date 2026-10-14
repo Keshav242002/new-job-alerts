@@ -16,13 +16,22 @@ on:
         type: choice
         options: [auto, incremental, full]
         default: auto
+      sources:
+        description: "Optional: comma-separated sources to run instead of the run's default (testing)"
+        type: string
+        default: ""
 
 permissions:
-  contents: write  # runs/latest.md keep-alive commit to this repo
+  contents: write  # runs/latest.md keep-alive + companies.json commits to this repo
 
 concurrency:
   group: job-alerts-pipeline
   cancel-in-progress: false
+
+env:
+  RUN_NAME: ${{ inputs.run || 'morning' }}
+  WELLFOUND_MODE: ${{ inputs.wellfound_mode || 'auto' }}
+  SOURCES: ${{ inputs.sources || '' }}
 
 jobs:
   pipeline:
@@ -30,6 +39,15 @@ jobs:
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check DATA_REPO_TOKEN
+        env:
+          TOKEN: ${{ secrets.DATA_REPO_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ] || ! git ls-remote -q "https://x-access-token:${TOKEN}@github.com/Keshav242002/job-alerts-data.git" HEAD >/dev/null 2>&1; then
+            echo "::error title=Data repo access failed::DATA_REPO_TOKEN expired or invalid"
+            exit 1
+          fi
 
       - name: Check out private data repo
         uses: actions/checkout@v4
@@ -42,14 +60,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Ensure Google Chrome (no Camoufox)
-        run: |
-          if ! command -v google-chrome >/dev/null; then
-            wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            sudo apt-get update -q && sudo apt-get install -y -q ./google-chrome-stable_current_amd64.deb
-          fi
-          google-chrome --version
-
       - name: Create venvs
         working-directory: job-scraper-test
         run: |
@@ -57,13 +67,12 @@ jobs:
           python -m venv venv-jobdrop && venv-jobdrop/bin/pip install -q -r requirements-jobdrop.txt
 
       - name: Run pipeline
-        id: pipeline
         working-directory: job-scraper-test
         run: |
-          venv-jobspy/bin/python pipeline.py --run "${{ inputs.run }}" \
-            --wellfound-mode "${{ inputs.wellfound_mode }}" \
-            --data-dir ../data --public-dir .. \
-            || echo "PIPELINE_FAILED=1" >> "$GITHUB_ENV"
+          set +e
+          venv-jobspy/bin/python pipeline.py --run "$RUN_NAME" --wellfound-mode "$WELLFOUND_MODE" \
+            ${SOURCES:+--sources "$SOURCES"} --data-dir ../data --public-dir ..
+          echo "PIPELINE_EXIT=$?" >> "$GITHUB_ENV"
 
       - name: Push data (private repo)
         working-directory: data
@@ -72,18 +81,27 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A seen_jobs.csv new_jobs.csv run_history.csv last_run_queries.csv state
           if git diff --cached --quiet; then echo "no data changes"; exit 0; fi
-          git commit -q -m "${{ inputs.run }} run $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push -q
+          git commit -q -m "$RUN_NAME run $(date -u +%Y-%m-%dT%H:%MZ)"
+          if ! git push -q; then
+            echo "::error title=Data push failed::DATA_REPO_TOKEN expired or invalid"
+            exit 1
+          fi
 
       - name: Push runs/latest.md (public keep-alive)
+        if: always()
         run: |
+          [ -f runs/latest.md ] || exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add runs/latest.md job-scraper-test/companies.json
           if git diff --cached --quiet; then echo "no summary changes"; exit 0; fi
-          git commit -q -m "runs: ${{ inputs.run }} $(date -u +%Y-%m-%dT%H:%MZ)"
+          git commit -q -m "runs: $RUN_NAME $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull -q --rebase && git push -q
 
-      - name: Fail if every source failed
-        if: env.PIPELINE_FAILED == '1'
-        run: exit 1
+      - name: Fail if any source failed
+        if: env.PIPELINE_EXIT != '0'
+        working-directory: job-scraper-test
+        run: |
+          failed=$(cat work/failed_sources.txt 2>/dev/null)
+          echo "::error title=Sources failed::Pipeline exit ${PIPELINE_EXIT}; failed sources: ${failed:-unknown (see Run pipeline step)}"
+          exit 1

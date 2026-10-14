@@ -35,7 +35,42 @@ FROM_SEARCH = [
     ("Gruve", "greenhouse", "gruve", 'site:boards.greenhouse.io Bangalore OR Gurugram OR Pune engineer India'),
     ("ConverseNow", "lever", "ConverseNow", 'lever.co Bangalore India backend engineer Python job posting'),
     ("Gushwork", "lever", "gushwork", 'lever.co Bangalore India backend engineer Python job posting'),
+    ("Jobgether", "lever", "jobgether", 'jobs.lever.co Mobile Application Developer Gurugram'),
+    ("Energy Tech Global", "greenhouse", "energytechglobal", 'boards.greenhouse.io Software Developer Hyderabad'),
+    ("Atlassian", "lever", "atlassian", 'jobs.lever.co SDE 1 Bangalore'),
 ]
+
+# India-based / India-hiring company names found via web search & pages (Oct 2026). Boards found for
+# these are kept even with no India-tagged opening today (the company is India-based).
+INDIA_NAME_SOURCES = {
+    "web search: jobs.ashbyhq.com / boards.greenhouse.io role x city queries": [
+        "Cartesia", "FurtherAI", "Skeps", "Capillary Technologies", "WorkIndia", "Kratikal", "BeyondScale",
+        "Code Vyasa", "Hiver", "CARD91", "GoDaddy", "Tower Research", "Forty4 Technologies", "Three Across",
+        "OfBusiness", "Josh Technology Group", "Urban Company", "Slice", "Eternal", "District", "Paisabazaar",
+        "CoTrav", "Lepton Software", "Cloud Counselage", "Spenmo", "LiteLLM", "Human Archive"],
+    "vcbacked.co YC companies in Bengaluru/Gurugram": [
+        "Ressl AI", "Ritivel", "Truffle AI", "Infinity", "xPay", "Yenmo", "Clueso", "CodeParrot AI", "DrDroid",
+        "Floworks", "Mantys", "SuperKalam", "AntWalk", "BharatX", "Blitzllama", "Castled.io", "Fello",
+        "Material Depot", "MySivi", "PayCrunch", "RecordBook", "Rehook.ai", "SALT", "Bimaplan", "BusinessOnBot",
+        "Codingal", "Dyte", "Flux Auto", "FanPlay", "RocketSDR", "Voosh", "Weekday", "Rowboat Labs", "CheqUPI",
+        "100x", "CompUp", "Coupl", "FlatX", "Gullak Money", "Integration Labs", "Maya Labs", "Peoplebox.ai",
+        "Raven", "Shelf", "SigmaMind AI", "Antropi Robotics", "Bolna AI", "YourQuote", "Zealth", "ZOKO",
+        "Chaos Genius", "DocVita", "farmtheory", "Morphle Labs", "Spenny", "StayQrious", "Synapsica", "Inito",
+        "Mudrex", "Akudo", "Coulomb AI", "FrontPage", "Ivy Homes", "Karbon Card", "Koshex", "marketfeed",
+        "Rivia.AI", "SalaryBook", "Spark Studio", "Stownest", "Cradle", "Decentro", "Explorex", "Jeevam Health",
+        "MedPiper", "Orange Health", "Volopay", "WareIQ", "Binks", "FamPay", "Lokal", "Namaste Business",
+        "Vahan", "Wingman", "Khatabook", "OkCredit", "Better Opinions", "Kaagaz", "RDash", "Bueno Finance",
+        "GroMo", "Invoid", "Pensil", "zingbus", "Kosh", "AccioJob", "Kisan Network", "Waybill", "Paasa",
+        "Clinikally", "Advantage Club", "Novatr", "SalaryBox", "Farmako", "Statiq"],
+    "fueler.io: Bengaluru startups hiring in 2026": [
+        "GrowthX", "SpotDraft", "Nanonets", "Pixis", "Murf AI", "Xoxoday", "Botsync", "Fulfil", "ENGinPilot",
+        "Troopod", "genieX", "Atherna", "SignSetu", "Fireflies.ai", "Slikk", "Clientell AI", "ChiefPulse",
+        "6sense", "SingleStore", "Cekura", "Cyble", "Samora AI", "SaralX", "Emergent", "AiPrise", "Cardboard",
+        "Tsenta", "Deepvue.ai", "iMerlin", "Leucine", "FOXO", "ownpath", "Havi", "BrandBrahma", "Cube",
+        "Asymmetric Labs", "Richpanel", "Outdoo AI", "Variabl", "Yug Brands", "VideoDB", "ToolJet", "Bureau",
+        "Atlys", "Maxim AI"],
+    "YC India jobs board (ycombinator.com/jobs/role/software-engineer/india)": ["Spenmo", "LiteLLM", "Human Archive"],
+}
 
 # Candidate companies (India-hiring). Slugs are guessed from the name; extra spellings in ALIASES.
 CANDIDATES = """
@@ -197,33 +232,50 @@ def main() -> None:
                             "discovered_via": f"web search: {q}"})
         time.sleep(0.3)
 
-    # candidate list: probe slugs (a few workers, each pausing between calls)
-    todo = [n for n in names if n not in search_by_name]
+    # candidate list + India-source names: probe slugs (a few workers, each pausing between calls)
+    india_src = {n: src for src, ns in INDIA_NAME_SOURCES.items() for n in ns}
+    todo = list(dict.fromkeys([n for n in names if n not in search_by_name] + list(india_src)))
     with ThreadPoolExecutor(max_workers=6) as ex:
-        for found in ex.map(lambda n: probe(n, requests.Session()), todo):
+        for name, found in zip(todo, ex.map(lambda n: probe(n, requests.Session()), todo)):
             for f in found:
-                f["discovered_via"] = "candidate list (India-hiring companies), slug verified via API"
+                f["discovered_via"] = (india_src[name] + ", slug verified via API" if name in india_src
+                                       else "candidate list (India-hiring companies), slug verified via API")
+                f["india_based"] = name in india_src
                 results.append(f)
 
     kept, seen = [], set()
     for r in sorted(results, key=lambda r: (-r["stack_india_jobs"], -r["india_jobs"], r["name"])):
         key = (r["ats"], r["board_slug"])
-        if key in seen or r["india_jobs"] == 0:
+        if key in seen or (r["india_jobs"] == 0 and not r.get("india_based")):
             continue
         seen.add(key)
         prev = existing.get(key, {})
         kept.append({"name": r["name"], "ats": r["ats"], "board_slug": r["board_slug"],
                      "discovered_via": r["discovered_via"], "active": prev.get("active", True),
                      "india_jobs_at_bootstrap": r["india_jobs"], "stack_india_jobs_at_bootstrap": r["stack_india_jobs"],
-                     "verified": time.strftime("%Y-%m-%d")})
+                     "verified": time.strftime("%Y-%m-%d"),
+                     # pruning: companies with kept_jobs_total == 0 30+ days after first_scanned are prune candidates
+                     "first_scanned": prev.get("first_scanned", time.strftime("%Y-%m-%d")),
+                     "kept_jobs_total": prev.get("kept_jobs_total", 0)})
     for key, c in existing.items():  # keep previously known boards (e.g. marked inactive)
         if key not in seen:
+            c.setdefault("first_scanned", time.strftime("%Y-%m-%d"))
+            c.setdefault("kept_jobs_total", 0)
             kept.append(c)
+    # keep curated names / notes from the existing file
+    by_key = {(c["ats"], c["board_slug"]): c for c in existing.values()}
+    for c in kept:
+        old = by_key.get((c["ats"], c["board_slug"]))
+        if old:
+            c["name"] = old.get("name", c["name"])
+            if "note" in old:
+                c["note"] = old["note"]
     out.write_text(json.dumps(kept, indent=2, ensure_ascii=False) + "\n")
 
     valid = {(r["ats"], r["board_slug"]) for r in results}
-    print(f"candidates {len(names)} + search {len(FROM_SEARCH)}; valid boards {len(valid)}; "
-          f"with India jobs {len(kept)} → {out}")
+    print(f"candidates {len(names)} + India-source names {len({n for ns in INDIA_NAME_SOURCES.values() for n in ns})} "
+          f"+ search slugs {len(FROM_SEARCH)}; valid boards {len(valid)}; kept {len(kept)} "
+          f"({sum(c['india_jobs_at_bootstrap'] > 0 for c in kept)} with India jobs now) → {out}")
     for a in ("greenhouse", "lever", "ashby"):
         k = [c for c in kept if c["ats"] == a]
         print(f"  {a:<10} {len(k):>3} companies, {sum(c['india_jobs_at_bootstrap'] for c in k):>4} India jobs, "

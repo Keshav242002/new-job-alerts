@@ -22,6 +22,8 @@ from pathlib import Path
 
 import pandas as pd
 
+import json
+
 import config
 import process as P
 import seen as S
@@ -173,8 +175,8 @@ def main() -> int:
         summary[col] = [int((mask & src_lists.map(lambda xs, t=f"{config.PROD_SOURCES[s][0]}:{config.PROD_SOURCES[s][1]}": t in xs)).sum())
                         if len(merged) else 0 for s in summary["source"]]
 
-    # ---- write private outputs
-    stamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    # ---- write private outputs (state uses the run's start time; "finished" is the real end time)
+    stamp = pd.Timestamp(datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")
     cols = ["title", "company", "location", "is_remote", "date_posted", "job_url", "job_type", "min_exp", "max_exp",
             "salary", "flags", "sources", "search_terms", "description"]
     out = new_jobs.reindex(columns=cols)
@@ -185,6 +187,14 @@ def main() -> int:
     out.insert(1, "run", args.run)
     out.to_csv(args.data_dir / "new_jobs.csv", index=False)
     S.update(merged, seen, is_new, now).to_csv(seen_path, index=False)
+    if "ats" in sources and len(new_jobs):
+        companies_path = HERE / "companies.json"
+        companies = json.loads(companies_path.read_text())
+        ats_new = new_jobs[new_jobs["sources"].str.split(";").map(lambda xs: "ats:ats" in xs)]
+        counts = ats_new["company"].fillna("").str.lower().value_counts()
+        for c in companies:
+            c["kept_jobs_total"] = int(c.get("kept_jobs_total", 0)) + int(counts.get(c["name"].lower(), 0))
+        companies_path.write_text(json.dumps(companies, indent=2, ensure_ascii=False) + "\n")
     ok_sources = summary.loc[summary["success"], "source"].tolist()
     if ok_sources:
         W.mark_success(ok_sources, now.to_pydatetime().replace(tzinfo=timezone.utc), state)
@@ -218,7 +228,9 @@ def main() -> int:
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
             f.write(text)
-    return 0 if ok_sources else 1
+    # exit: 0 all sources ok, 2 some failed, 1 all failed (the workflow fails visibly on non-zero)
+    (work / "failed_sources.txt").write_text(",".join(failed))
+    return 1 if not ok_sources else (2 if failed else 0)
 
 
 if __name__ == "__main__":

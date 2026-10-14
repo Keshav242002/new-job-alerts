@@ -228,6 +228,17 @@ JOBTYPE_FIELD_RE = re.compile(r"part[\s\-]?time|intern|contract|freelanc|tempora
 FRESHER_TITLE_RE = re.compile(r"\b(?:intern(?:ship)?s?|trainee|freshers?)\b", re.I)
 SENIORITY_RE = re.compile(r"\b(?:senior|sr\.?|lead|staff|principal|architect|manager)\b", re.I)
 
+# Staffing / recruitment agencies: flag only (they often re-post client jobs).
+STAFFING_COMPANY_RE = re.compile(
+    r"staffing|recruit|consult|manpower|placement|talent\s*(?:solutions|acquisition|hub)|hr\s*(?:solutions|services)|"
+    r"outsourc|workforce|headhunt|search\s*partners|human\s*resource|hunting\s*cube|\bhire\b|hiring\s*(?:solutions|services)|"
+    r"jobgether",
+    re.I)
+STAFFING_DESC_RE = re.compile(
+    r"(?:hiring|recruiting)\s+(?:for|on behalf of)\s+(?:one of\s+)?(?:our|a)\s+(?:leading\s+)?client|"
+    r"on behalf of (?:our|a|one of our) (?:client|partner)|our client,? (?:a|an|is)|for (?:a|our) (?:leading|reputed) client",
+    re.I)
+
 # Stable rule names (exclusion_reason may append details in parentheses).
 RULES = ["older_than_window", "no_skill_match", "job_type", "fresher_only", "seniority_title",
          "min_exp>4", "fullstack_angular_vue_only"]
@@ -252,9 +263,10 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> 
     cutoffs = (ref_date - pd.to_timedelta(hours, unit="h")).dt.normalize()  # date_posted is day-granular
     job_types = df["job_type"] if "job_type" in df.columns else pd.Series([None] * len(df), index=df.index)
     reasons, flags = [], []
-    for t, title, mn, mx, dp, st, desc, jt, cutoff in zip(
+    approxs = df["date_approx"] if "date_approx" in df.columns else pd.Series([None] * len(df), index=df.index)
+    for t, title, mn, mx, dp, st, desc, jt, cutoff, approx, company in zip(
             text, df["title"].fillna(""), df["min_exp"], df["max_exp"], df["date_posted"],
-            df["search_terms"], df["description"].fillna(""), job_types, cutoffs):
+            df["search_terms"], df["description"].fillna(""), job_types, cutoffs, approxs, df["company"].fillna("")):
         r = []
         if pd.notna(dp) and dp < cutoff:
             r.append(f"older_than_window ({dp.date()})")
@@ -283,8 +295,12 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> 
             f.append("mobile_non_flutter")
         if pd.isna(dp):
             f.append("date_unknown")
+        elif approx is True or str(approx).lower() == "true":
+            f.append("date_approx")
         if not on_topic(title, desc, st):
             f.append("off_topic_title")
+        if STAFFING_COMPANY_RE.search(company) or STAFFING_DESC_RE.search(desc):
+            f.append("staffing_agency")
         flags.append(";".join(f))
     df["exclusion_reason"] = reasons
     df["flags"] = flags

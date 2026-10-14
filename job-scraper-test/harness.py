@@ -29,6 +29,7 @@ import config
 SCHEMA = [
     "source_lib", "site", "title", "company", "location", "is_remote", "date_posted",
     "job_url", "job_type", "min_exp", "max_exp", "salary", "description", "search_term", "search_location",
+    "date_approx",
 ]
 
 HERE = Path(__file__).resolve().parent
@@ -177,7 +178,7 @@ def _slug(*parts: str) -> str:
     return re.sub(r"[^A-Za-z0-9]+", "_", s)[:80] + "_" + hashlib.md5(s.encode()).hexdigest()[:6]
 
 
-RE_429 = re.compile(r"(?:status(?: code)?|response|HTTP)\D{0,12}429\b|\b429 Too Many|Too Many Requests", re.I)
+RE_429 = re.compile(r"(?:status(?: code)?|response|HTTP)\D{0,12}429\b|\b429 Too Many|Too Many Requests|too many 429", re.I)
 
 
 def _attempt(lib: str, site: str, term: str, loc: str, raw_out: Path, log_path: Path):
