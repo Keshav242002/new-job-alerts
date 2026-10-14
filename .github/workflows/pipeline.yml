@@ -55,6 +55,18 @@ jobs:
             echo "::error title=Data repo access failed::DATA_REPO_TOKEN expired or invalid"
             exit 1
           fi
+          # expiry date of the fine-grained token (from GitHub's response header; not secret)
+          exp=$(curl -sI -H "Authorization: Bearer $TOKEN" https://api.github.com/repos/Keshav242002/job-alerts-data \
+                | tr -d '\r' | awk -F': ' 'tolower($1)=="github-authentication-token-expiration"{print $2}')
+          if [ -n "$exp" ]; then
+            days=$(( ( $(date -d "$exp" +%s) - $(date +%s) ) / 86400 ))
+            echo "DATA_REPO_TOKEN expires: $exp ($days days left)"
+            if [ "$days" -lt 14 ]; then
+              echo "::warning title=DATA_REPO_TOKEN expiring::expires in $days days ($exp) — create a new token and update the secret"
+            fi
+          else
+            echo "DATA_REPO_TOKEN expiry: none reported (no expiry set)"
+          fi
 
       - name: Check out private data repo
         uses: actions/checkout@v4

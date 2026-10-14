@@ -167,6 +167,7 @@ def normalize(df: pd.DataFrame, lib: str, site: str, term: str, loc: str) -> pd.
             lambda s: s[: config.DESCRIPTION_MAX_CHARS] if isinstance(s, str) else None),
         "search_term": term,
         "search_location": loc,
+        "date_approx": False,  # boards here give their own posting date
     })
     return out[SCHEMA]
 
@@ -326,7 +327,12 @@ def run(lib: str) -> None:
                     delay = config.LINKEDIN_DELAY_RANGE if site == "linkedin" else config.DELAY_RANGE
                     time.sleep(random.uniform(*delay))
                 first = False
-                rec = run_one(lib, site, term, loc, out_dir)
+                try:
+                    rec = run_one(lib, site, term, loc, out_dir)
+                except Exception as e:  # noqa: BLE001 — record a code error for this query, keep the lane going
+                    rec = skip_one(lib, site, term, loc, out_dir, f"{type(e).__name__}: {e}"[:200])
+                    rec["status"] = "error"
+                    (out_dir / "parts" / f"{_slug(lib, site, term, loc)}.json").write_text(json.dumps(rec))
                 streak[site] = streak[site] + 1 if rec["status"] in ("blocked", "captcha") else 0
             with lock:
                 records.append(rec)
