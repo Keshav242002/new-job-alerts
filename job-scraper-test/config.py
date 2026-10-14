@@ -35,7 +35,7 @@ COUNTRY = "India"
 HOURS_OLD = 72
 RESULTS_WANTED = 25
 FETCH_DESCRIPTION = True  # needed for experience parsing (LinkedIn has none otherwise)
-DESCRIPTION_MAX_CHARS = 2000
+DESCRIPTION_MAX_CHARS = 10000  # full enough for skill matching; new_jobs.csv shows NEW_JOBS_DESCRIPTION_CHARS
 
 # Polite delay (seconds, random uniform) between consecutive queries to the same site.
 DELAY_RANGE = (4, 9)
@@ -120,10 +120,11 @@ PROD_SOURCES = {
     "naukri": ("jobspy", "naukri"),   # no hours_old (JOBSPY_NAUKRI_RELEVANCE); date-filtered in process.py
     "google": ("jobdrop", "google"),
     "wellfound": ("wellfound", "wellfound"),
+    "ats": ("ats", "ats"),             # Greenhouse / Lever / Ashby boards from companies.json
 }
 # Which sources each scheduled run fetches (see SCHEDULE.md).
 PROD_RUNS = {
-    "morning": ["linkedin", "indeed", "naukri", "google", "wellfound"],
+    "morning": ["linkedin", "indeed", "naukri", "google", "wellfound", "ats"],
     "evening": ["linkedin", "indeed", "naukri"],
 }
 # Fetch window = time since the source's last successful run, at least 24h; 72h on its first run.
@@ -138,3 +139,6 @@ WELLFOUND_FULL_WEEKDAY = 6  # Sunday, in IST
 SEEN_RETENTION_DAYS = 90  # drop seen_jobs entries not seen for this long
 NEW_JOBS_DESCRIPTION_CHARS = 600
 BROWSER_CONNECT_RETRIES = 2  # retries for headless Chrome 'Failed to connect to browser'
+
+# ATS (Greenhouse/Lever/Ashby public APIs)
+ATS_DELAY_RANGE = (0.5, 1.5)  # between companies

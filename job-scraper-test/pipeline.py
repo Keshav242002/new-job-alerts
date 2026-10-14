@@ -55,6 +55,8 @@ def build_commands(sources: list[str], windows: dict[str, int], args, work: Path
     if "wellfound" in sources:
         cmds["wellfound"] = ([js, "run_wellfound.py", "--mode", args.wellfound_mode, "--out", str(work / "wellfound"),
                               "--seen", str(args.data_dir / "seen_jobs.csv")] + extra, ["wellfound"])
+    if "ats" in sources:
+        cmds["ats"] = ([js, "run_ats.py", "--out", str(work / "ats")], ["ats"])
     return cmds
 
 
@@ -166,6 +168,10 @@ def main() -> int:
     is_new = S.match_new(merged, seen) if len(merged) else pd.Series(dtype=bool)
     kept_mask = merged["exclusion_reason"] == ""
     new_jobs = merged[kept_mask & is_new].copy()
+    src_lists = merged["sources"].fillna("").str.split(";") if len(merged) else pd.Series(dtype=object)
+    for col, mask in (("kept", kept_mask), ("new", kept_mask & is_new)):
+        summary[col] = [int((mask & src_lists.map(lambda xs, t=f"{config.PROD_SOURCES[s][0]}:{config.PROD_SOURCES[s][1]}": t in xs)).sum())
+                        if len(merged) else 0 for s in summary["source"]]
 
     # ---- write private outputs
     stamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -192,9 +198,18 @@ def main() -> int:
     totals = (f"raw rows {len(raw)} → deduped {len(merged)} → kept {int(kept_mask.sum())} "
               f"(excluded {int((~kept_mask).sum())}) → **new {len(new_jobs)}** "
               f"(already seen {int((kept_mask & ~is_new).sum())})")
+    failed = summary.loc[~summary["success"], "source"].tolist()
     md = [f"# Latest run\n", f"- Finished: {stamp} (UTC)", f"- Run: {args.run}",
           f"- Windows (h): " + ", ".join(f"{s} {w}" for s, w in windows.items()),
-          f"- {totals}", "", P.md_table(summary), ""]
+          f"- {totals}", f"- Failed sources: {', '.join(failed) if failed else 'none'}", "",
+          P.md_table(summary.drop(columns=["skipped"]) if "skipped" in summary else summary), ""]
+    ats_runs = runs[runs["lib"] == "ats"] if len(runs) else runs
+    if len(ats_runs):
+        per = ats_runs.groupby("search_term").agg(companies=("status", "size"),
+                                                   with_india_jobs=("rows", lambda r: int((r > 0).sum())),
+                                                   india_jobs=("rows", "sum"),
+                                                   errors=("status", lambda s: int((s == "error").sum())))
+        md += ["ATS boards scanned:", "", P.md_table(per.reset_index().rename(columns={"search_term": "ats"})), ""]
     text = "\n".join(md)
     print(text, flush=True)
     if args.public_dir:

@@ -1,0 +1,1043 @@
+[
+  {
+    "name": "Okta",
+    "ats": "greenhouse",
+    "board_slug": "okta",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 112,
+    "stack_india_jobs_at_bootstrap": 63,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Databricks",
+    "ats": "greenhouse",
+    "board_slug": "databricks",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 94,
+    "stack_india_jobs_at_bootstrap": 47,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Tekion",
+    "ats": "ashby",
+    "board_slug": "tekion",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 71,
+    "stack_india_jobs_at_bootstrap": 19,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "PubMatic",
+    "ats": "greenhouse",
+    "board_slug": "pubmatic",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 36,
+    "stack_india_jobs_at_bootstrap": 19,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "MongoDB",
+    "ats": "greenhouse",
+    "board_slug": "mongodb",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 86,
+    "stack_india_jobs_at_bootstrap": 12,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Zeta Global",
+    "ats": "greenhouse",
+    "board_slug": "zetaglobal",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 40,
+    "stack_india_jobs_at_bootstrap": 11,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Druva",
+    "ats": "greenhouse",
+    "board_slug": "druva",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 13,
+    "stack_india_jobs_at_bootstrap": 8,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Fivetran",
+    "ats": "greenhouse",
+    "board_slug": "fivetran",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 24,
+    "stack_india_jobs_at_bootstrap": 7,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Smart Working Solutions",
+    "ats": "lever",
+    "board_slug": "smart-working-solutions",
+    "discovered_via": "web search: site:jobs.ashbyhq.com \"Remote - India\" OR Bangalore",
+    "active": true,
+    "india_jobs_at_bootstrap": 16,
+    "stack_india_jobs_at_bootstrap": 7,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Acceldata",
+    "ats": "lever",
+    "board_slug": "acceldata",
+    "discovered_via": "web search: site:jobs.lever.co Bengaluru software engineer",
+    "active": true,
+    "india_jobs_at_bootstrap": 14,
+    "stack_india_jobs_at_bootstrap": 7,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Hevo Data",
+    "ats": "lever",
+    "board_slug": "hevodata",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 52,
+    "stack_india_jobs_at_bootstrap": 6,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Rubrik",
+    "ats": "greenhouse",
+    "board_slug": "rubrik",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 36,
+    "stack_india_jobs_at_bootstrap": 6,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Zenoti",
+    "ats": "greenhouse",
+    "board_slug": "zenoti",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 34,
+    "stack_india_jobs_at_bootstrap": 6,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Toast",
+    "ats": "greenhouse",
+    "board_slug": "toast",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 16,
+    "stack_india_jobs_at_bootstrap": 6,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Zscaler",
+    "ats": "greenhouse",
+    "board_slug": "zscaler",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 63,
+    "stack_india_jobs_at_bootstrap": 5,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "GitLab",
+    "ats": "greenhouse",
+    "board_slug": "gitlab",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 29,
+    "stack_india_jobs_at_bootstrap": 5,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Glance",
+    "ats": "greenhouse",
+    "board_slug": "glance",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 20,
+    "stack_india_jobs_at_bootstrap": 5,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Agoda",
+    "ats": "greenhouse",
+    "board_slug": "agoda",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 13,
+    "stack_india_jobs_at_bootstrap": 5,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "UiPath",
+    "ats": "ashby",
+    "board_slug": "uipath",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 5,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Celonis",
+    "ats": "greenhouse",
+    "board_slug": "celonis",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 32,
+    "stack_india_jobs_at_bootstrap": 4,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "ChargePoint",
+    "ats": "greenhouse",
+    "board_slug": "chargepoint",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 16,
+    "stack_india_jobs_at_bootstrap": 4,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "SigNoz",
+    "ats": "ashby",
+    "board_slug": "signoz",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 14,
+    "stack_india_jobs_at_bootstrap": 4,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Plane",
+    "ats": "ashby",
+    "board_slug": "plane",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 10,
+    "stack_india_jobs_at_bootstrap": 4,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Paytm",
+    "ats": "lever",
+    "board_slug": "paytm",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 171,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Stripe",
+    "ats": "greenhouse",
+    "board_slug": "stripe",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 46,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Smartsheet",
+    "ats": "greenhouse",
+    "board_slug": "smartsheet",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 21,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Safe Security",
+    "ats": "lever",
+    "board_slug": "safe",
+    "discovered_via": "web search: site:jobs.lever.co Bengaluru software engineer",
+    "active": true,
+    "india_jobs_at_bootstrap": 16,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Coinbase",
+    "ats": "greenhouse",
+    "board_slug": "coinbase",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 9,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "ConverseNow",
+    "ats": "lever",
+    "board_slug": "ConverseNow",
+    "discovered_via": "web search: lever.co Bangalore India backend engineer Python job posting",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Anyscale",
+    "ats": "ashby",
+    "board_slug": "anyscale",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Sumo Logic",
+    "ats": "greenhouse",
+    "board_slug": "sumologic",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 3,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Sarvam AI",
+    "ats": "ashby",
+    "board_slug": "sarvam",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 42,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Tide",
+    "ats": "greenhouse",
+    "board_slug": "tide",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 41,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Atlys",
+    "ats": "ashby",
+    "board_slug": "atlys",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 33,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Sigmoid",
+    "ats": "greenhouse",
+    "board_slug": "sigmoid",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 31,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Twilio",
+    "ats": "greenhouse",
+    "board_slug": "twilio",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 18,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Fampay",
+    "ats": "lever",
+    "board_slug": "fampay",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 17,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "TrueFoundry",
+    "ats": "greenhouse",
+    "board_slug": "truefoundry",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 13,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "CloudSEK",
+    "ats": "greenhouse",
+    "board_slug": "cloudsek",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 12,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Gushwork",
+    "ats": "lever",
+    "board_slug": "gushwork",
+    "discovered_via": "web search: lever.co Bangalore India backend engineer Python job posting",
+    "active": true,
+    "india_jobs_at_bootstrap": 8,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Coursera",
+    "ats": "greenhouse",
+    "board_slug": "coursera",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Get Well Network",
+    "ats": "greenhouse",
+    "board_slug": "getwellnetwork",
+    "discovered_via": "web search: site:job-boards.greenhouse.io Bengaluru India software engineer",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "New Relic",
+    "ats": "greenhouse",
+    "board_slug": "newrelic",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Coupa",
+    "ats": "lever",
+    "board_slug": "coupa",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 6,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Together AI",
+    "ats": "greenhouse",
+    "board_slug": "togetherai",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 6,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Adyen",
+    "ats": "greenhouse",
+    "board_slug": "adyen",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "YugabyteDB",
+    "ats": "greenhouse",
+    "board_slug": "yugabyte",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 2,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Meesho",
+    "ats": "lever",
+    "board_slug": "meesho",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 58,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "HighRadius",
+    "ats": "greenhouse",
+    "board_slug": "highradius",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 49,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "InMobi",
+    "ats": "greenhouse",
+    "board_slug": "inmobi",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 41,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Instawork",
+    "ats": "greenhouse",
+    "board_slug": "instawork",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 37,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "HackerRank",
+    "ats": "greenhouse",
+    "board_slug": "hackerrank",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 20,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "MindTickle",
+    "ats": "lever",
+    "board_slug": "mindtickle",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 18,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Elastic",
+    "ats": "greenhouse",
+    "board_slug": "elastic",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 17,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "KKR",
+    "ats": "greenhouse",
+    "board_slug": "stage",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 17,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14",
+    "note": "slug 'stage' is KKR's board (not STAGE OTT); kept, KKR hires in India"
+  },
+  {
+    "name": "Gruve",
+    "ats": "greenhouse",
+    "board_slug": "gruve",
+    "discovered_via": "web search: site:boards.greenhouse.io Bangalore OR Gurugram OR Pune engineer India",
+    "active": true,
+    "india_jobs_at_bootstrap": 16,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "LinkedIn",
+    "ats": "lever",
+    "board_slug": "linkedin",
+    "discovered_via": "web search: site:jobs.lever.co Bengaluru software engineer",
+    "active": true,
+    "india_jobs_at_bootstrap": 14,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "SpotDraft",
+    "ats": "ashby",
+    "board_slug": "spotdraft",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 11,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Netomi",
+    "ats": "lever",
+    "board_slug": "netomi",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 10,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "ClickHouse",
+    "ats": "ashby",
+    "board_slug": "clickhouse",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 9,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "100ms",
+    "ats": "lever",
+    "board_slug": "100ms",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 8,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Snowflake",
+    "ats": "ashby",
+    "board_slug": "snowflake",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Airbnb",
+    "ats": "greenhouse",
+    "board_slug": "airbnb",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Gainsight",
+    "ats": "ashby",
+    "board_slug": "gainsight",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Starburst",
+    "ats": "greenhouse",
+    "board_slug": "starburst",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Atlan",
+    "ats": "ashby",
+    "board_slug": "atlan",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 4,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Meltplan",
+    "ats": "greenhouse",
+    "board_slug": "meltplan",
+    "discovered_via": "web search: site:job-boards.greenhouse.io Bengaluru India software engineer",
+    "active": true,
+    "india_jobs_at_bootstrap": 4,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Samsara",
+    "ats": "greenhouse",
+    "board_slug": "samsara",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 4,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Turing",
+    "ats": "greenhouse",
+    "board_slug": "turing",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 4,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Notion",
+    "ats": "ashby",
+    "board_slug": "notion",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 3,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Astronomer",
+    "ats": "ashby",
+    "board_slug": "astronomer",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Smallest AI",
+    "ats": "ashby",
+    "board_slug": "smallest",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 1,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Zeta",
+    "ats": "lever",
+    "board_slug": "zeta",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 23,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Bureau",
+    "ats": "ashby",
+    "board_slug": "bureau",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 19,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Datadog",
+    "ats": "greenhouse",
+    "board_slug": "datadog",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 11,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Commvault",
+    "ats": "greenhouse",
+    "board_slug": "commvault",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 10,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Groww",
+    "ats": "greenhouse",
+    "board_slug": "groww",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 10,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Zocdoc",
+    "ats": "greenhouse",
+    "board_slug": "zocdoc",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 10,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Nium",
+    "ats": "lever",
+    "board_slug": "nium",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 9,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Airwallex",
+    "ats": "ashby",
+    "board_slug": "airwallex",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "CRED",
+    "ats": "lever",
+    "board_slug": "cred",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "ElevenLabs",
+    "ats": "ashby",
+    "board_slug": "elevenlabs",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 7,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Bolna",
+    "ats": "ashby",
+    "board_slug": "bolna",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 6,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Docsumo",
+    "ats": "lever",
+    "board_slug": "docsumo",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 6,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "LaunchDarkly",
+    "ats": "greenhouse",
+    "board_slug": "launchdarkly",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 6,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Observe.AI",
+    "ats": "greenhouse",
+    "board_slug": "observeai",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Zuora",
+    "ats": "greenhouse",
+    "board_slug": "zuora",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 5,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Mixpanel",
+    "ats": "greenhouse",
+    "board_slug": "mixpanel",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 4,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Composio",
+    "ats": "ashby",
+    "board_slug": "composio",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 3,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Temporal",
+    "ats": "ashby",
+    "board_slug": "temporal",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 3,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Workato",
+    "ats": "greenhouse",
+    "board_slug": "workato",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 3,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Amplitude",
+    "ats": "ashby",
+    "board_slug": "amplitude",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Cockroach Labs",
+    "ats": "greenhouse",
+    "board_slug": "cockroachlabs",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Cresta",
+    "ats": "greenhouse",
+    "board_slug": "cresta",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Oyster",
+    "ats": "ashby",
+    "board_slug": "oyster",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Pocket FM",
+    "ats": "lever",
+    "board_slug": "pocketfm",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Redis",
+    "ats": "ashby",
+    "board_slug": "redis",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Thoughtworks",
+    "ats": "greenhouse",
+    "board_slug": "thoughtworks",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Vercel",
+    "ats": "greenhouse",
+    "board_slug": "vercel",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 2,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Cloudflare",
+    "ats": "greenhouse",
+    "board_slug": "cloudflare",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 1,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Duolingo",
+    "ats": "greenhouse",
+    "board_slug": "duolingo",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 1,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Figma",
+    "ats": "greenhouse",
+    "board_slug": "figma",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 1,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Spotify",
+    "ats": "lever",
+    "board_slug": "spotify",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 1,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  },
+  {
+    "name": "Xendit",
+    "ats": "greenhouse",
+    "board_slug": "xendit",
+    "discovered_via": "candidate list (India-hiring companies), slug verified via API",
+    "active": true,
+    "india_jobs_at_bootstrap": 1,
+    "stack_india_jobs_at_bootstrap": 0,
+    "verified": "2026-10-14"
+  }
+]

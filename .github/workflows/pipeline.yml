@@ -79,7 +79,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add runs/latest.md
+          git add runs/latest.md job-scraper-test/companies.json
           if git diff --cached --quiet; then echo "no summary changes"; exit 0; fi
           git commit -q -m "runs: ${{ inputs.run }} $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull -q --rebase && git push -q
