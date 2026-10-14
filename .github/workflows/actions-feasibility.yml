@@ -1,0 +1,119 @@
+name: Actions feasibility test
+
+# Manual-only probe: which scrapers work from a GitHub-hosted runner (datacenter IP)?
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: job-scraper-test
+
+jobs:
+  jobspy:
+    name: "jobspy: linkedin, indeed, naukri"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-jobspy.txt
+      - name: Scrape
+        run: >
+          python run_jobspy.py --out out-jobspy --sites linkedin,indeed,naukri
+          --terms "Flutter Developer" --locations "Bangalore" --linkedin-locations "India;Remote"
+      - name: Summary
+        if: always()
+        run: python summarize_runs.py out-jobspy jobspy
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jobspy
+          retention-days: 7
+          path: |
+            job-scraper-test/out-jobspy/*.csv
+            job-scraper-test/out-jobspy/*.json
+            job-scraper-test/out-jobspy/logs/
+
+  jobdrop-google:
+    name: "jobdrop: google (headless Chrome)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Ensure Google Chrome (no Camoufox)
+        run: |
+          if ! command -v google-chrome >/dev/null; then
+            wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            sudo apt-get update -q && sudo apt-get install -y -q ./google-chrome-stable_current_amd64.deb
+          fi
+          google-chrome --version
+      - run: pip install -r requirements-jobdrop.txt
+      - name: Scrape
+        run: >
+          python run_jobdrop.py --out out-jobdrop-google --sites google
+          --terms "Flutter Developer" --locations "Bangalore"
+      - name: Summary
+        if: always()
+        run: python summarize_runs.py out-jobdrop-google jobdrop
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jobdrop-google
+          retention-days: 7
+          path: |
+            job-scraper-test/out-jobdrop-google/*.csv
+            job-scraper-test/out-jobdrop-google/*.json
+            job-scraper-test/out-jobdrop-google/logs/
+
+  jobdrop-linkedin:
+    name: "jobdrop: linkedin"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-jobdrop.txt
+      - name: Scrape
+        run: >
+          python run_jobdrop.py --out out-jobdrop-linkedin --sites linkedin
+          --terms "Flutter Developer" --linkedin-locations "India"
+      - name: Summary
+        if: always()
+        run: python summarize_runs.py out-jobdrop-linkedin jobdrop
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jobdrop-linkedin
+          retention-days: 7
+          path: |
+            job-scraper-test/out-jobdrop-linkedin/*.csv
+            job-scraper-test/out-jobdrop-linkedin/*.json
+            job-scraper-test/out-jobdrop-linkedin/logs/
+
+  wellfound-http:
+    name: "wellfound: plain HTTP GET"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - run: python wellfound_probe.py out-wellfound
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wellfound
+          retention-days: 7
+          path: job-scraper-test/out-wellfound/
