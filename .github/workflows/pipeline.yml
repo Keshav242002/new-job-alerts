@@ -4,6 +4,9 @@ name: Job alerts pipeline
 # Scraped data is pushed to the private data repo (DATA_REPO_TOKEN: fine-grained,
 # contents read/write on Keshav242002/job-alerts-data only).
 on:
+  schedule:
+    - cron: "15 3 * * *"   # 08:45 IST — morning: LinkedIn, Naukri, Wellfound, ATS
+    - cron: "15 13 * * *"  # 18:45 IST — evening: LinkedIn, Naukri
   workflow_dispatch:
     inputs:
       run:
@@ -29,7 +32,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  RUN_NAME: ${{ inputs.run || 'morning' }}
+  # scheduled runs: the 13:15 UTC cron is the evening run, the 03:15 UTC cron the morning run
+  RUN_NAME: ${{ github.event_name == 'schedule' && (github.event.schedule == '15 13 * * *' && 'evening' || 'morning') || inputs.run || 'morning' }}
   WELLFOUND_MODE: ${{ inputs.wellfound_mode || 'auto' }}
   SOURCES: ${{ inputs.sources || '' }}
 
@@ -82,7 +86,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A seen_jobs.csv new_jobs.csv run_history.csv last_run_queries.csv state
+          git add -A seen_jobs.csv new_jobs.csv new_jobs_log.csv run_history.csv last_run_queries.csv state
           if git diff --cached --quiet; then echo "no data changes"; exit 0; fi
           git commit -q -m "$RUN_NAME run $(date -u +%Y-%m-%dT%H:%MZ)"
           if ! git push -q; then

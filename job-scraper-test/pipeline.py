@@ -2,8 +2,8 @@
 
     python pipeline.py --run morning --data-dir ../data --public-dir ..
 
-Data dir (private repo checkout): seen_jobs.csv, new_jobs.csv, run_history.csv,
-last_run_queries.csv, state/last_success.json. Public dir: runs/latest.md (counts only — no titles,
+Data dir (private repo checkout): new_jobs.csv (this run), new_jobs_log.csv (append-only),
+seen_jobs.csv, run_history.csv, last_run_queries.csv, state/last_success.json. Public dir: runs/latest.md (counts only — no titles,
 companies or URLs; it doubles as the schedule keep-alive commit).
 
 Each scraper runs as its own process in its library's venv; the fetch window per
@@ -185,7 +185,9 @@ def main() -> int:
         out["description"] = out["description"].fillna("").str.slice(0, config.NEW_JOBS_DESCRIPTION_CHARS)
     out.insert(0, "found_utc", stamp)
     out.insert(1, "run", args.run)
-    out.to_csv(args.data_dir / "new_jobs.csv", index=False)
+    out.to_csv(args.data_dir / "new_jobs.csv", index=False)  # this run only
+    log_path = args.data_dir / "new_jobs_log.csv"  # append-only: every new job ever found
+    out.to_csv(log_path, mode="a", index=False, header=not log_path.exists())
     S.update(merged, seen, is_new, now).to_csv(seen_path, index=False)
     if "ats" in sources and len(new_jobs):
         companies_path = HERE / "companies.json"
