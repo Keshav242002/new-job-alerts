@@ -9,3 +9,4 @@ out-*/
 *.log
 *.pkl
 *.html
+actions-results/

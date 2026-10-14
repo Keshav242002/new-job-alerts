@@ -3,6 +3,12 @@ name: Actions feasibility test
 # Manual-only probe: which scrapers work from a GitHub-hosted runner (datacenter IP)?
 on:
   workflow_dispatch:
+    inputs:
+      jobs:
+        description: "Which probes to run"
+        type: choice
+        options: [all, indeed-check]
+        default: all
 
 permissions:
   contents: read
@@ -13,6 +19,7 @@ defaults:
 
 jobs:
   jobspy:
+    if: inputs.jobs == 'all'
     name: "jobspy: linkedin, indeed, naukri"
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -40,6 +47,7 @@ jobs:
             job-scraper-test/out-jobspy/logs/
 
   jobdrop-google:
+    if: inputs.jobs == 'all'
     name: "jobdrop: google (headless Chrome)"
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -74,6 +82,7 @@ jobs:
             job-scraper-test/out-jobdrop-google/logs/
 
   jobdrop-linkedin:
+    if: inputs.jobs == 'all'
     name: "jobdrop: linkedin"
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -101,6 +110,7 @@ jobs:
             job-scraper-test/out-jobdrop-linkedin/logs/
 
   wellfound-http:
+    if: inputs.jobs == 'all'
     name: "wellfound: plain HTTP GET"
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -117,3 +127,31 @@ jobs:
           name: wellfound
           retention-days: 7
           path: job-scraper-test/out-wellfound/
+
+  indeed-check:
+    name: "jobspy: indeed (Software Engineer, India, 72h)"
+    if: inputs.jobs == 'all' || inputs.jobs == 'indeed-check'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-jobspy.txt
+      - name: Scrape
+        run: >
+          python run_jobspy.py --out out-indeed --sites indeed
+          --terms "Software Engineer" --locations "India"
+      - name: Summary
+        if: always()
+        run: python summarize_runs.py out-indeed jobspy
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: indeed-check
+          retention-days: 7
+          path: |
+            job-scraper-test/out-indeed/*.csv
+            job-scraper-test/out-indeed/*.json
+            job-scraper-test/out-indeed/logs/
