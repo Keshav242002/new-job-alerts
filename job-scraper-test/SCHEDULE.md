@@ -4,8 +4,8 @@ Two runs a day on GitHub Actions (cron is UTC; IST = UTC+5:30).
 
 | Run | IST | cron (UTC) | Sources |
 |---|---|---|---|
-| Morning | 08:45 | `15 3 * * *` | LinkedIn (jobdrop), Naukri (jobspy), Wellfound, ATS (Greenhouse/Lever/Ashby) |
-| Evening | 18:45 | `15 13 * * *` | LinkedIn (jobdrop), Naukri (jobspy) |
+| Morning | 08:45 | `15 3 * * *` | LinkedIn (jobdrop), Naukri (jobspy, best-effort), Wellfound, ATS (Greenhouse/Lever/Ashby, best-effort) |
+| Evening | 18:45 | `15 13 * * *` | LinkedIn (jobdrop) |
 
 Removed (code kept, re-enable in `config.PROD_SOURCES`): **Indeed** (removed 2026-10-14) and
 **Google Jobs** (Google CAPTCHAs the Actions runner at volume).
@@ -19,9 +19,18 @@ Per source, tracked in `state/last_success.json` (`window.py`):
 - first run of a source: 72h (ATS: 30 days — postings stay live for weeks)
 - afterwards: time since that source's last successful run, minimum 24h
 
-So LinkedIn/Naukri use 24h at both runs (≈10h/14h gaps are below the minimum, so runs
-overlap — `seen_jobs.csv` removes repeats), and Wellfound/ATS use 24h from morning to
-morning. A missed run widens the next window automatically.
+So LinkedIn uses 24h at both runs (≈10h/14h gaps are below the minimum, so runs overlap —
+`seen_jobs.csv` removes repeats), and Naukri/Wellfound/ATS use 24h from morning to morning.
+A missed run widens the next window automatically.
+
+Per-source pacing:
+
+- **LinkedIn** — 22 queries (11 terms × India, Remote), sequential, 25–45 s apart; 300 s per
+  query. Each query fetches 25 job descriptions (~2.5 min); after 270 s it stops fetching
+  descriptions and keeps the jobs it has (those rows have no description) rather than being
+  killed. 429s back off 60/120/240 s.
+- **Naukri** — morning only, 66 queries (11 terms × India, Bangalore, Gurugram, Noida, Pune,
+  Hyderabad), 20–40 s apart; stops for the day after 2 consecutive 406 (recaptcha) responses.
 
 How the window is applied:
 
@@ -45,12 +54,21 @@ Sources per run (each runs as a parallel process inside the single `pipeline` jo
 | Source | Morning | Evening |
 |---|---|---|
 | `linkedin` (jobdrop venv) | ✓ | ✓ |
-| `naukri` (jobspy venv) | ✓ | ✓ |
+| `naukri` (jobspy venv) | ✓ | – |
 | `wellfound` (requests only) | ✓ | – |
 | `ats` — boards in `companies.json` (requests only) | ✓ | – |
 
 All sources run as parallel processes in **one** Actions job (`pipeline.py`), so no data
-leaves the runner except to the private data repo. Failure handling: any failed source
-(<50% of its queries ok/empty) fails the workflow (GitHub emails you) after data and
-`runs/latest.md` are pushed; `runs/latest.md` lists the failed sources. A bad/expired
-token fails with "DATA_REPO_TOKEN expired or invalid".
+leaves the runner except to the private data repo.
+
+Failure handling (a source fails when <50% of its queries are ok/empty):
+
+- **LinkedIn or Wellfound** failing fails the workflow (GitHub emails you) after data and
+  `runs/latest.md` are pushed.
+- **Naukri and ATS are best-effort**: their failures are listed in `runs/latest.md`
+  ("Failed best-effort sources") but don't fail the run.
+- A failed data push, or a bad/expired token, fails with "DATA_REPO_TOKEN expired or invalid".
+  Each run logs the token's expiry date and warns when fewer than 14 days remain.
+
+`runs/latest.md` shows per-source query statuses, rows, kept/new, 429s, runtime and
+`total_run_min` (wall clock including delays and backoff).

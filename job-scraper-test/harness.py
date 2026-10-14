@@ -37,6 +37,28 @@ HERE = Path(__file__).resolve().parent
 
 # --------------------------------------------------------------------------- worker
 
+def _timebox_linkedin_descriptions() -> None:
+    """After LINKEDIN_DESCRIPTION_BUDGET_S, skip remaining per-job description fetches so the
+    query returns the jobs it already has instead of being killed at the timeout."""
+    from jobdrop.linkedin import LinkedIn
+
+    t0 = time.monotonic()
+    budget = float(os.environ.get("LINKEDIN_DESCRIPTION_BUDGET_S") or config.LINKEDIN_DESCRIPTION_BUDGET_S)
+    original = LinkedIn._get_job_details
+    skipped = {"n": 0}
+
+    def budgeted(self, job_id):
+        if time.monotonic() - t0 > budget:
+            if skipped["n"] == 0:
+                print(f"LinkedIn description budget ({budget:g}s) reached; "
+                      "returning remaining jobs without descriptions", file=sys.stderr, flush=True)
+            skipped["n"] += 1
+            return {}
+        return original(self, job_id)
+
+    LinkedIn._get_job_details = budgeted
+
+
 def _worker(lib: str, site: str, term: str, loc: str, out: str) -> None:
     """Runs inside the child process: one scrape_jobs call, pickled to `out`."""
     import importlib
@@ -45,6 +67,8 @@ def _worker(lib: str, site: str, term: str, loc: str, out: str) -> None:
     logging.basicConfig(level=logging.INFO, stream=sys.stderr,
                         format="%(asctime)s %(name)s %(levelname)s %(message)s")
     mod = importlib.import_module(lib)
+    if lib == "jobdrop" and site == "linkedin":
+        _timebox_linkedin_descriptions()
 
     remote = loc == "Remote"
     hours_old = int(os.environ.get("JOB_HOURS_OLD") or config.HOURS_OLD)
@@ -183,7 +207,8 @@ RE_429 = re.compile(r"(?:status(?: code)?|response|HTTP)\D{0,12}429\b|\b429 Too 
 
 
 def _attempt(lib: str, site: str, term: str, loc: str, raw_out: Path, log_path: Path):
-    timeout = config.TIMEOUT_BROWSER if site in config.BROWSER_SITES and lib == "jobdrop" else config.TIMEOUT_HTTP
+    timeout = config.TIMEOUT_BY_SITE.get(
+        site, config.TIMEOUT_BROWSER if site in config.BROWSER_SITES and lib == "jobdrop" else config.TIMEOUT_HTTP)
     cmd = [sys.executable, str(HERE / "harness.py"), "--worker", lib, site, term, loc, str(raw_out)]
     timed_out = False
     with open(log_path, "w") as logf:
@@ -277,6 +302,8 @@ def site_queries(site: str, smoke: bool, terms=None, locations=None, linkedin_lo
         locs = config.SMOKE_LOCATIONS
     elif site == "linkedin":
         locs = linkedin_locations or config.LINKEDIN_LOCATIONS
+    elif site == "naukri" and not locations:
+        locs = config.NAUKRI_LOCATIONS
     else:
         locs = locations or config.LOCATIONS
     return [(t, l) for t in terms for l in locs]
@@ -319,12 +346,13 @@ def run(lib: str) -> None:
         tasks = [(s, q) for i in range(max(len(jobs[s]) for s in lane_sites))
                  for s in lane_sites if i < len(jobs[s]) for q in [jobs[s][i]]]
         for site, (term, loc) in tasks:
-            if streak[site] >= config.BLOCK_STREAK_LIMIT:
-                rec = skip_one(lib, site, term, loc, out_dir,
-                               f"skipped after {config.BLOCK_STREAK_LIMIT} consecutive blocks")
+            limit = config.BLOCK_STREAK_BY_SITE.get(site, config.BLOCK_STREAK_LIMIT)
+            if streak[site] >= limit:
+                rec = skip_one(lib, site, term, loc, out_dir, f"skipped after {limit} consecutive blocks")
             else:
                 if not first and not (out_dir / "parts" / f"{_slug(lib, site, term, loc)}.json").exists():
-                    delay = config.LINKEDIN_DELAY_RANGE if site == "linkedin" else config.DELAY_RANGE
+                    delay = {"linkedin": config.LINKEDIN_DELAY_RANGE,
+                             "naukri": config.NAUKRI_DELAY_RANGE}.get(site, config.DELAY_RANGE)
                     time.sleep(random.uniform(*delay))
                 first = False
                 try:

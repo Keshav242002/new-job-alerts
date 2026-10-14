@@ -43,10 +43,17 @@ DELAY_RANGE = (4, 9)
 # Per-query hard timeouts (seconds). The worker process group is killed on expiry.
 TIMEOUT_HTTP = 180
 TIMEOUT_BROWSER = 300
+TIMEOUT_BY_SITE = {"linkedin": 300}  # LinkedIn fetches 25 descriptions per query (~2.5 min typical)
+# After this many seconds a LinkedIn query stops fetching descriptions and returns the jobs it has
+# (remaining rows have no description) so it finishes before TIMEOUT_BY_SITE instead of losing all rows.
+LINKEDIN_DESCRIPTION_BUDGET_S = 270
 
 # LinkedIn only: country-level searches instead of per-city, slower pace, backoff on 429.
 LINKEDIN_LOCATIONS = ["India", "Remote"]
 LINKEDIN_DELAY_RANGE = (25, 45)
+# Naukri (best-effort, morning only): fewer locations and slower pace to avoid 406 rate limits.
+NAUKRI_LOCATIONS = ["India", "Bangalore", "Gurugram", "Noida", "Pune", "Hyderabad"]
+NAUKRI_DELAY_RANGE = (20, 40)
 BACKOFF_429 = [60, 120, 240]  # seconds before retry 1/2/3 when a query got 429s and no rows
 BACKOFF_SITES = {"linkedin"}
 
@@ -106,6 +113,7 @@ def google_query(term: str, location: str, hours: int = 72) -> str:
 
 # Stop querying a site after this many consecutive blocked/captcha results (rest marked "skipped").
 BLOCK_STREAK_LIMIT = 3
+BLOCK_STREAK_BY_SITE = {"naukri": 2}  # Naukri: stop for the day after 2 consecutive 406 (recaptcha) responses
 
 # Wellfound (plain HTTP role pages; see wellfound.py for role/location slug maps)
 WELLFOUND_DELAY_RANGE = (3, 6)
@@ -125,8 +133,11 @@ PROD_SOURCES = {
 # Which sources each scheduled run fetches (see SCHEDULE.md).
 PROD_RUNS = {
     "morning": ["linkedin", "naukri", "wellfound", "ats"],
-    "evening": ["linkedin", "naukri"],
+    "evening": ["linkedin"],
 }
+# Only these sources fail the workflow when they fail; the rest are best-effort (logged in
+# runs/latest.md, run still passes). A failed data push always fails the run.
+CRITICAL_SOURCES = {"linkedin", "wellfound"}
 # Fetch window = time since the source's last successful run, at least 24h; 72h on its first run.
 MIN_WINDOW_HOURS = 24
 FIRST_RUN_WINDOW_HOURS = 72

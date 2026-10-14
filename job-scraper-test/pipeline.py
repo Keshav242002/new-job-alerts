@@ -62,8 +62,9 @@ def build_commands(sources: list[str], windows: dict[str, int], args, work: Path
     return cmds
 
 
-def run_parallel(cmds: dict, work: Path, timeout_s: int) -> dict[str, int | None]:
-    procs, logs, codes = {}, {}, {}
+def run_parallel(cmds: dict, work: Path, timeout_s: int) -> tuple[dict[str, int | None], dict[str, float]]:
+    """-> (exit code per process, wall-clock minutes per process)"""
+    procs, logs, codes, minutes = {}, {}, {}, {}
     for name, (argv, _) in cmds.items():
         logs[name] = open(work / f"{name}.console.log", "w")
         procs[name] = subprocess.Popen(argv, cwd=HERE, stdout=logs[name], stderr=subprocess.STDOUT)
@@ -73,18 +74,20 @@ def run_parallel(cmds: dict, work: Path, timeout_s: int) -> dict[str, int | None
         for name, p in list(procs.items()):
             if p.poll() is not None:
                 codes[name] = p.returncode
-                print(f"finished {name} (exit {p.returncode}) after {(time.time() - t0) / 60:.1f} min", flush=True)
+                minutes[name] = round((time.time() - t0) / 60, 1)
+                print(f"finished {name} (exit {p.returncode}) after {minutes[name]} min", flush=True)
                 del procs[name]
         if time.time() - t0 > timeout_s:
             for name, p in procs.items():
                 p.kill()
                 codes[name] = None
+                minutes[name] = round((time.time() - t0) / 60, 1)
                 print(f"killed {name} after {timeout_s / 60:.0f} min", flush=True)
             break
         time.sleep(5)
     for f in logs.values():
         f.close()
-    return codes
+    return codes, minutes
 
 
 def collect(work: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -101,7 +104,8 @@ def collect(work: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     return raw, runs
 
 
-def site_summary(runs: pd.DataFrame, sources: list[str], codes: dict, cmds: dict) -> pd.DataFrame:
+def site_summary(runs: pd.DataFrame, sources: list[str], codes: dict, cmds: dict,
+                 minutes: dict | None = None) -> pd.DataFrame:
     rows = []
     for s in sources:
         lib, site = config.PROD_SOURCES[s]
@@ -116,6 +120,7 @@ def site_summary(runs: pd.DataFrame, sources: list[str], codes: dict, cmds: dict
             "429s": int(r["n429"].sum()) if "n429" in r and len(r) else 0,
             "browser_retries": int(r["browser_retries"].sum()) if "browser_retries" in r and len(r) else 0,
             "runtime_min": round(float(r["runtime_s"].sum()) / 60, 1) if len(r) else 0.0,
+            "total_run_min": (minutes or {}).get(proc),  # wall clock incl. delays/backoff (shared process: jobspy)
             "process_exit": codes.get(proc),
             "success": bool(counted) and good / counted >= 0.5 and codes.get(proc) == 0,
         })
@@ -151,9 +156,9 @@ def main() -> int:
     work.mkdir(parents=True, exist_ok=True)
 
     cmds = build_commands(sources, windows, args, work)
-    codes = run_parallel(cmds, work, args.timeout_min * 60)
+    codes, minutes = run_parallel(cmds, work, args.timeout_min * 60)
     raw, runs = collect(work)
-    summary = site_summary(runs, sources, codes, cmds)
+    summary = site_summary(runs, sources, codes, cmds, minutes)
 
     # ---- process: rules with each job's widest source window, then dedupe against seen_jobs
     tag_to_source = {f"{lib}:{site}": s for s, (lib, site) in config.PROD_SOURCES.items()}
@@ -211,9 +216,14 @@ def main() -> int:
               f"(excluded {int((~kept_mask).sum())}) → **new {len(new_jobs)}** "
               f"(already seen {int((kept_mask & ~is_new).sum())})")
     failed = summary.loc[~summary["success"], "source"].tolist()
+    failed_critical = [f for f in failed if f in config.CRITICAL_SOURCES]
+    failed_best_effort = [f for f in failed if f not in config.CRITICAL_SOURCES]
     md = [f"# Latest run\n", f"- Finished: {stamp} (UTC)", f"- Run: {args.run}",
           f"- Windows (h): " + ", ".join(f"{s} {w}" for s, w in windows.items()),
-          f"- {totals}", f"- Failed sources: {', '.join(failed) if failed else 'none'}", "",
+          f"- {totals}",
+          f"- Failed sources (fail the run): {', '.join(failed_critical) if failed_critical else 'none'}",
+          f"- Failed best-effort sources (logged only): {', '.join(failed_best_effort) if failed_best_effort else 'none'}",
+          "",
           P.md_table(summary.drop(columns=["skipped"]) if "skipped" in summary else summary), ""]
     ats_runs = runs[runs["lib"] == "ats"] if len(runs) else runs
     if len(ats_runs):
@@ -230,9 +240,12 @@ def main() -> int:
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
             f.write(text)
-    # exit: 0 all sources ok, 2 some failed, 1 all failed (the workflow fails visibly on non-zero)
-    (work / "failed_sources.txt").write_text(",".join(failed))
-    return 1 if not ok_sources else (2 if failed else 0)
+    # exit: 0 = every critical source ok (best-effort failures only logged), 2 = some critical source
+    # failed, 1 = nothing succeeded. The workflow fails visibly on non-zero.
+    (work / "failed_sources.txt").write_text(",".join(failed_critical))
+    if not ok_sources:
+        return 1
+    return 2 if failed_critical else 0
 
 
 if __name__ == "__main__":
