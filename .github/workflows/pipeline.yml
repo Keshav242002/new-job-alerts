@@ -43,8 +43,11 @@ jobs:
       - name: Check DATA_REPO_TOKEN
         env:
           TOKEN: ${{ secrets.DATA_REPO_TOKEN }}
+        # run outside the workspace: actions/checkout saved GITHUB_TOKEN as an auth header in the
+        # repo's git config, which would override the token in the URL
+        working-directory: ${{ runner.temp }}
         run: |
-          if [ -z "$TOKEN" ] || ! git ls-remote -q "https://x-access-token:${TOKEN}@github.com/Keshav242002/job-alerts-data.git" HEAD >/dev/null 2>&1; then
+          if [ -z "$TOKEN" ] || ! git ls-remote "https://x-access-token:${TOKEN}@github.com/Keshav242002/job-alerts-data.git" HEAD >/dev/null 2>&1; then
             echo "::error title=Data repo access failed::DATA_REPO_TOKEN expired or invalid"
             exit 1
           fi
