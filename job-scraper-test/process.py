@@ -155,10 +155,23 @@ def dedupe(df: pd.DataFrame) -> pd.DataFrame:
                 continue  # no company -> don't merge on key alone
             for j in idx[1:]:
                 parent[find(j)] = find(idx[0])
+    # Jobgether re-posts other companies' jobs: merge a Jobgether row into a non-Jobgether row with
+    # the same normalized title (3+ words, so generic titles like "Software Engineer" don't merge).
+    is_jg = df["company"].fillna("").str.contains("jobgether", case=False)
+    titles = df["title"].map(_norm)
+    if is_jg.any():
+        other_by_title = {}
+        for i in df.index[~is_jg]:
+            other_by_title.setdefault(titles[i], i)
+        for i in df.index[is_jg]:
+            j = other_by_title.get(titles[i])
+            if j is not None and len(titles[i].split()) >= 3:
+                parent[find(i)] = find(j)
     df["_grp"] = [find(i) for i in range(len(df))]
 
     df["_score"] = (df[["date_posted", "description", "min_exp", "company", "location"]].notna().sum(axis=1)
-                    + (df["exp_source"] == "structured") * 2)
+                    + (df["exp_source"] == "structured") * 2
+                    - is_jg.astype(int) * 10)  # never keep the Jobgether copy when the original is present
     rows = []
     for _, g in df.groupby("_grp", sort=False):
         best = g.sort_values("_score", ascending=False).iloc[0].copy()
@@ -223,7 +236,8 @@ def on_topic(title: str, desc: str, search_terms: str) -> bool:
 SKILL_RE = re.compile(r"\b(?:flutter|dart|python|django|fast\s?api|react(?:\.?js)?)\b", re.I)
 # Job type from the board's field when present, else from the title ("smart contract" is a skill, not a type).
 JOBTYPE_TITLE_RE = re.compile(
-    r"\b(?:intern(?:ship)?s?|part[\s\-]?time|freelanc\w*|(?<!smart )contract(?:ual|or)?|c2h|contract[\s\-]to[\s\-]hire)\b", re.I)
+    r"\b(?:intern(?:ship)?s?|apprentice(?:ship)?s?|part[\s\-]?time|freelanc\w*|(?<!smart )contract(?:ual|or)?|c2h|"
+    r"contract[\s\-]to[\s\-]hire)\b", re.I)
 JOBTYPE_FIELD_RE = re.compile(r"part[\s\-]?time|intern|contract|freelanc|temporary", re.I)
 FRESHER_TITLE_RE = re.compile(r"\b(?:intern(?:ship)?s?|trainee|freshers?)\b", re.I)
 SENIORITY_RE = re.compile(r"\b(?:senior|sr\.?|lead|staff|principal|architect|manager)\b", re.I)
@@ -239,9 +253,45 @@ STAFFING_DESC_RE = re.compile(
     r"on behalf of (?:our|a|one of our) (?:client|partner)|our client,? (?:a|an|is)|for (?:a|our) (?:leading|reputed) client",
     re.I)
 
+# My skills in a title: rescues a title from off_role_title.
+MY_SKILL_TITLE_RE = re.compile(r"\b(?:flutter|dart|python|django|fast\s?api|react(?:\.?js)?|full[\s\-]?stack)\b", re.I)
+# other_stack_title exemption: a named skill — "Full Stack" alone does NOT exempt (e.g. "Java Full Stack Developer").
+STACK_EXEMPT_TITLE_RE = re.compile(r"\b(?:flutter|dart|python|django|fast\s?api|react(?:\.?js)?)\b", re.I)
+# Title names a different primary stack.
+OTHER_STACK_TITLE_RE = re.compile(
+    r"\bjava\b(?!\s*script)|\.net\b|\bdot\s?net\b|\bc#|\bc\+\+|\bgolang\b|\bgo\s+(?:developer|engineer|lang)\b|\bphp\b|"
+    r"\bruby\b|\brails\b|\bsalesforce\b|\bsap\b|\bangular(?:\.?js)?\b|\bvue(?:\.?js)?\b|\bkotlin\b|\bswift\b|\bios\b|"
+    r"\bandroid\b", re.I)
+# Non-dev role families.
+OFF_ROLE_TITLE_RE = re.compile(
+    r"\bsupport\b|\bnetwork(?:ing)?\b|\bsecurity\b|\bqa\b|\bquality\s+assurance\b|\btest(?:ing|er)?\b|\bsdet\b|"
+    r"\bautomation\s+test|\bdevops\b|\bsre\b|site\s+reliability|\bplatform\b|\bdata\s+analyst\b|\bsales\b|"
+    r"\bconsultant\b|\badministrator\b|\badmin\b", re.I)
+AI_ML_TITLE_RE = re.compile(
+    r"\b(?:ai|ml|gen\s?ai|llm|machine\s+learning|deep\s+learning|data\s+scien\w*|applied\s+scien\w*|nlp|computer\s+vision)\b",
+    re.I)
+PYTHON_RE = re.compile(r"\bpython\b", re.I)
+# Allowed locations (any listed city matches). Remote = is_remote or "remote"/"work from home" in location.
+ALLOWED_CITY_RE = re.compile(
+    r"bangalore|bengaluru|gurugram|gurgaon|\bnoida\b|greater\s+noida|\bdelhi\b|new\s+delhi|\bncr\b|ghaziabad|faridabad|"
+    r"\bpune\b|mumbai|navi\s+mumbai|\bthane\b|hyderabad|chennai", re.I)
+REMOTE_LOC_RE = re.compile(r"remote|work\s*from\s*home|\bwfh\b", re.I)
+
+
+def location_check(location, is_remote) -> str:
+    """-> 'ok', 'unclear' (exactly India / blank: keep + flag) or 'excluded'."""
+    loc = location.strip() if isinstance(location, str) else ""
+    remote = is_remote is True or str(is_remote).strip().lower() == "true"
+    if ALLOWED_CITY_RE.search(loc) or remote or REMOTE_LOC_RE.search(loc):
+        return "ok"
+    if loc == "" or loc.lower() in ("india", "in", "ind"):
+        return "unclear"
+    return "excluded"
+
+
 # Stable rule names (exclusion_reason may append details in parentheses).
-RULES = ["older_than_window", "no_skill_match", "job_type", "fresher_only", "seniority_title",
-         "min_exp>4", "fullstack_angular_vue_only"]
+RULES = ["older_than_window", "location", "no_skill_match", "job_type", "fresher_only", "seniority_title",
+         "other_stack_title", "off_role_title", "min_exp>4", "fullstack_angular_vue_only"]
 
 
 def excluded_job_type(title: str, job_type) -> str | None:
@@ -264,12 +314,17 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> 
     job_types = df["job_type"] if "job_type" in df.columns else pd.Series([None] * len(df), index=df.index)
     reasons, flags = [], []
     approxs = df["date_approx"] if "date_approx" in df.columns else pd.Series([None] * len(df), index=df.index)
-    for t, title, mn, mx, dp, st, desc, jt, cutoff, approx, company in zip(
+    remotes = df["is_remote"] if "is_remote" in df.columns else pd.Series([None] * len(df), index=df.index)
+    for t, title, mn, mx, dp, st, desc, jt, cutoff, approx, company, loc, rem in zip(
             text, df["title"].fillna(""), df["min_exp"], df["max_exp"], df["date_posted"],
-            df["search_terms"], df["description"].fillna(""), job_types, cutoffs, approxs, df["company"].fillna("")):
+            df["search_terms"], df["description"].fillna(""), job_types, cutoffs, approxs, df["company"].fillna(""),
+            df["location"], remotes):
         r = []
         if pd.notna(dp) and dp < cutoff:
             r.append(f"older_than_window ({dp.date()})")
+        loc_status = location_check(loc, rem)
+        if loc_status == "excluded":
+            r.append(f"location ({str(loc)[:40]})")
         has_desc = bool(desc.strip())
         if not SKILL_RE.search(t) and has_desc:
             r.append("no_skill_match")
@@ -283,6 +338,11 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> 
             r.append(f"min_exp>4 ({mn:g})")
         if FULLSTACK_RE.search(t) and ANGULAR_VUE_RE.search(t) and not REACT_RE.search(t) and not FLUTTER_RE.search(t):
             r.append("fullstack_angular_vue_only")
+        my_skill_in_title = bool(MY_SKILL_TITLE_RE.search(title))
+        if (m := OTHER_STACK_TITLE_RE.search(title)) and not STACK_EXEMPT_TITLE_RE.search(title):
+            r.append(f"other_stack_title ({m.group(0).strip()})")
+        if (m := OFF_ROLE_TITLE_RE.search(title)) and not my_skill_in_title:
+            r.append(f"off_role_title ({m.group(0).strip()})")
         reasons.append("; ".join(r))
         f = []
         if not has_desc and not SKILL_RE.search(title):
@@ -301,6 +361,10 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> 
             f.append("off_topic_title")
         if STAFFING_COMPANY_RE.search(company) or STAFFING_DESC_RE.search(desc):
             f.append("staffing_agency")
+        if loc_status == "unclear":
+            f.append("location_unclear")
+        if AI_ML_TITLE_RE.search(title) and PYTHON_RE.search(t):
+            f.append("ai_ml_role")
         flags.append(";".join(f))
     df["exclusion_reason"] = reasons
     df["flags"] = flags
