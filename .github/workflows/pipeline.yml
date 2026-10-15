@@ -1,16 +1,23 @@
 name: Job alerts pipeline
+# Run title carries the run type; the backup guard matches successful runs by it.
+run-name: >-
+  ${{ github.event_name == 'schedule' && 'backup ' || '' }}${{ github.event_name == 'schedule'
+  && ((github.event.schedule == '15 15 * * *' || github.event.schedule == '15 13 * * *') && 'evening' || 'morning')
+  || inputs.run || 'morning' }}${{ inputs.sources && ' (test)' || '' }}
 
 # Public repo hygiene: no artifacts; logs/summaries show counts and errors only.
 # Scraped data is pushed to the private data repo (DATA_REPO_TOKEN: fine-grained,
 # contents read/write on Keshav242002/job-alerts-data only).
+# Primary trigger: cron-job.org calls workflow_dispatch (run=morning at 08:45 IST, run=evening at 18:45 IST).
+# GitHub crons are only a backup, 2 hours later; they skip when that run type already succeeded.
 on:
   schedule:
-    - cron: "15 3 * * *"   # 08:45 IST — morning: LinkedIn, Wellfound (+ best-effort Naukri, ATS)
-    - cron: "15 13 * * *"  # 18:45 IST — evening: LinkedIn, Wellfound (+ best-effort ATS)
+    - cron: "15 5 * * *"   # 10:45 IST — backup morning: LinkedIn, Wellfound (+ best-effort Naukri, ATS)
+    - cron: "15 15 * * *"  # 20:45 IST — backup evening: LinkedIn, Wellfound (+ best-effort ATS)
   workflow_dispatch:
     inputs:
       run:
-        description: "Which run (sources per SCHEDULE.md)"
+        description: "Which run: decides the sources (see SCHEDULE.md)"
         type: choice
         options: [morning, evening]
         default: morning
@@ -26,14 +33,16 @@ on:
 
 permissions:
   contents: write  # runs/latest.md keep-alive + companies.json commits to this repo
+  actions: read    # backup guard: list this workflow's recent runs
 
 concurrency:
   group: job-alerts-pipeline
   cancel-in-progress: false
 
 env:
-  # scheduled runs: the 13:15 UTC cron is the evening run, the 03:15 UTC cron the morning run
-  RUN_NAME: ${{ github.event_name == 'schedule' && (github.event.schedule == '15 13 * * *' && 'evening' || 'morning') || inputs.run || 'morning' }}
+  # dispatch: the "run" input decides; backup crons: 15:15 UTC = evening, 05:15 UTC = morning
+  # (15 13 kept so a late event from the old evening cron can never become a Naukri morning run)
+  RUN_NAME: ${{ github.event_name == 'schedule' && ((github.event.schedule == '15 15 * * *' || github.event.schedule == '15 13 * * *') && 'evening' || 'morning') || inputs.run || 'morning' }}
   WELLFOUND_MODE: ${{ inputs.wellfound_mode || 'auto' }}
   SOURCES: ${{ inputs.sources || '' }}
 
@@ -42,9 +51,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
+      - name: Backup guard (skip if this run type already succeeded in the last 6h)
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          since=$(date -u -d '6 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+          n=$(gh api "repos/${{ github.repository }}/actions/workflows/pipeline.yml/runs?status=success&per_page=50" \
+                -q "[.workflow_runs[] | select(.id != ${{ github.run_id }}) | select(.updated_at >= \"$since\")
+                     | select(.display_title == \"$RUN_NAME\" or .display_title == \"backup $RUN_NAME\")] | length")
+          if [ "${n:-0}" -gt 0 ]; then
+            echo "A successful $RUN_NAME run finished since $since — backup skipped."
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          else
+            echo "No successful $RUN_NAME run since $since — running the backup."
+          fi
+
       - uses: actions/checkout@v4
+        if: env.SKIP != '1'
 
       - name: Check DATA_REPO_TOKEN
+        if: env.SKIP != '1'
         env:
           TOKEN: ${{ secrets.DATA_REPO_TOKEN }}
         # run outside the workspace: actions/checkout saved GITHUB_TOKEN as an auth header in the
@@ -69,6 +96,7 @@ jobs:
           fi
 
       - name: Check out private data repo
+        if: env.SKIP != '1'
         uses: actions/checkout@v4
         with:
           repository: Keshav242002/job-alerts-data
@@ -76,16 +104,19 @@ jobs:
           path: data
 
       - uses: actions/setup-python@v5
+        if: env.SKIP != '1'
         with:
           python-version: "3.12"
 
       - name: Create venvs
+        if: env.SKIP != '1'
         working-directory: job-scraper-test
         run: |
           python -m venv venv-jobspy && venv-jobspy/bin/pip install -q -r requirements-jobspy.txt
           python -m venv venv-jobdrop && venv-jobdrop/bin/pip install -q -r requirements-jobdrop.txt
 
       - name: Run pipeline
+        if: env.SKIP != '1'
         working-directory: job-scraper-test
         run: |
           set +e
@@ -94,6 +125,7 @@ jobs:
           echo "PIPELINE_EXIT=$?" >> "$GITHUB_ENV"
 
       - name: Push data (private repo)
+        if: env.SKIP != '1'
         working-directory: data
         run: |
           git config user.name "github-actions[bot]"
@@ -107,7 +139,7 @@ jobs:
           fi
 
       - name: Push runs/latest.md (public keep-alive)
-        if: always()
+        if: always() && env.SKIP != '1'
         run: |
           [ -f runs/latest.md ] || exit 0
           git config user.name "github-actions[bot]"
@@ -118,7 +150,7 @@ jobs:
           git pull -q --rebase && git push -q
 
       - name: Fail if any source failed
-        if: env.PIPELINE_EXIT != '0'
+        if: env.SKIP != '1' && env.PIPELINE_EXIT != '0'
         working-directory: job-scraper-test
         run: |
           failed=$(cat work/failed_sources.txt 2>/dev/null)

@@ -1,11 +1,28 @@
 # Pipeline schedule
 
-Two runs a day on GitHub Actions (cron is UTC; IST = UTC+5:30).
+Two runs a day on GitHub Actions (IST = UTC+5:30). GitHub's own cron is best-effort (runs
+start hours late or not at all), so the **primary trigger is cron-job.org** calling
+`workflow_dispatch` on `.github/workflows/pipeline.yml` with `run=morning` / `run=evening`;
+the `run` input decides the sources.
 
-| Run | IST | cron (UTC) | Sources |
+| Run | Primary (cron-job.org) | Backup GitHub cron (UTC) | Sources |
 |---|---|---|---|
-| Morning | 08:45 | `15 3 * * *` | LinkedIn (jobdrop), Naukri (jobspy, best-effort), Wellfound, ATS (Greenhouse/Lever/Ashby, best-effort) |
-| Evening | 18:45 | `15 13 * * *` | LinkedIn (jobdrop), Wellfound (incremental), ATS (best-effort) |
+| Morning | 08:45 IST, `run=morning` | 10:45 IST, `15 5 * * *` | LinkedIn (jobdrop), Naukri (jobspy, best-effort), Wellfound, ATS (Greenhouse/Lever/Ashby, best-effort) |
+| Evening | 18:45 IST, `run=evening` | 20:45 IST, `15 15 * * *` | LinkedIn (jobdrop), Wellfound (incremental), ATS (best-effort) |
+
+The backup crons start with a guard: if a successful run of the same type (run title
+`morning`/`evening`, or `backup …`) finished in the last 6 hours, the backup exits as success
+without scraping — so Naukri never runs twice. The concurrency group queues overlapping
+runs instead of running them together. Test dispatches with `sources` set are titled
+`… (test)` and don't count for the guard.
+
+Trigger (token: fine-grained, this repo only, Actions: read and write; 204 = accepted):
+
+```
+curl -X POST https://api.github.com/repos/Keshav242002/new-job-alerts/actions/workflows/pipeline.yml/dispatches \
+  -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $TOKEN" \
+  -H "X-GitHub-Api-Version: 2022-11-28" -d '{"ref":"main","inputs":{"run":"morning"}}'
+```
 
 Removed (code kept, re-enable in `config.PROD_SOURCES`): **Indeed** (removed 2026-10-14) and
 **Google Jobs** (Google CAPTCHAs the Actions runner at volume).
