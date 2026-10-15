@@ -3,7 +3,7 @@
     python pipeline.py --run morning --data-dir ../data --public-dir ..
 
 Data dir (private repo checkout): new_jobs.csv (this run), new_jobs_log.csv (append-only),
-excluded.csv (this run's never-seen excluded jobs + exclusion_reason),
+excluded.csv (this run's never-seen excluded jobs + exclusion_reason), excluded_log.csv (same, last 7 days),
 seen_jobs.csv, run_history.csv, last_run_queries.csv, state/last_success.json. Public dir: runs/latest.md (counts only — no titles,
 companies or URLs; it doubles as the schedule keep-alive commit).
 
@@ -56,8 +56,8 @@ def build_commands(sources: list[str], windows: dict[str, int], args, work: Path
         cmds["google"] = ([jd, "run_jobdrop.py", "--sites", "google", "--out", str(work / "google"),
                            "--hours-old", str(windows["google"])] + extra, ["google"])
     if "wellfound" in sources:
-        cmds["wellfound"] = ([js, "run_wellfound.py", "--mode", args.wellfound_mode, "--out", str(work / "wellfound"),
-                              "--seen", str(args.data_dir / "seen_jobs.csv")] + extra, ["wellfound"])
+        cmds["wellfound"] = ([js, "run_wellfound.py", "--mode", args.wellfound_mode, "--out", str(work / "wellfound")]
+                             + extra, ["wellfound"])
     if "ats" in sources:
         cmds["ats"] = ([js, "run_ats.py", "--out", str(work / "ats")], ["ats"])
     return cmds
@@ -163,14 +163,11 @@ def main() -> int:
     raw, runs = collect(work)
     summary = site_summary(runs, sources, codes, cmds, minutes)
 
-    # ---- process: rules with each job's widest source window, then dedupe against seen_jobs
-    tag_to_source = {f"{lib}:{site}": s for s, (lib, site) in config.PROD_SOURCES.items()}
+    # ---- process: rules (14-day max posting age, not the fetch window), then dedupe against seen_jobs
     if len(raw):
         raw = P.add_dates(P.add_experience(raw))
         merged = P.dedupe(raw)
-        row_window = merged["sources"].str.split(";").map(
-            lambda tags: max(windows.get(tag_to_source.get(t), config.MIN_WINDOW_HOURS) for t in tags))
-        merged = P.apply_rules(merged, now, row_window)
+        merged = P.apply_rules(merged, now)
     else:
         merged = pd.DataFrame(columns=["exclusion_reason", "urls", "company", "title", "location"])
     seen_path = args.data_dir / "seen_jobs.csv"
@@ -204,6 +201,12 @@ def main() -> int:
         exc["description"] = exc["description"].fillna("").str.slice(0, config.NEW_JOBS_DESCRIPTION_CHARS)
     exc.insert(0, "found_utc", stamp)
     exc.to_csv(args.data_dir / "excluded.csv", index=False)
+    # rolling log: every run's excluded jobs, last EXCLUDED_LOG_DAYS days only
+    xlog_path = args.data_dir / "excluded_log.csv"
+    xlog = pd.read_csv(xlog_path, dtype=str, keep_default_na=False) if xlog_path.exists() else exc.iloc[0:0]
+    xcut = (now - pd.Timedelta(days=config.EXCLUDED_LOG_DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    xlog = pd.concat([xlog[xlog["found_utc"] >= xcut], exc], ignore_index=True)
+    xlog.to_csv(xlog_path, index=False)
     S.update(merged, seen, is_new, now).to_csv(seen_path, index=False)
     if "ats" in sources and len(new_jobs):
         companies_path = HERE / "companies.json"

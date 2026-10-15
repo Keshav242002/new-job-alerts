@@ -149,6 +149,9 @@ FIRST_RUN_WINDOW_HOURS_BY_SOURCE = {"ats": 30 * 24}
 WELLFOUND_INCREMENTAL_MAX_PAGES = 5
 WELLFOUND_FULL_MAX_PAGES = 10
 WELLFOUND_FULL_WEEKDAY = 6  # Sunday, in IST
+# process.py date filter: max posting age for every source (the fetch window is separate, window.py)
+MAX_POSTING_AGE_DAYS = 14
+EXCLUDED_LOG_DAYS = 7  # excluded_log.csv keeps this many days of excluded jobs
 SEEN_RETENTION_DAYS = 90  # drop seen_jobs entries not seen for this long
 NEW_JOBS_DESCRIPTION_CHARS = 600
 BROWSER_CONNECT_RETRIES = 2  # retries for headless Chrome 'Failed to connect to browser'

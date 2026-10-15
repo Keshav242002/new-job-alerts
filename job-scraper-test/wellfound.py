@@ -171,12 +171,11 @@ def seen_ids_from(urls) -> set[str]:
     return {m.group(1) for u in urls if isinstance(u, str) and (m := JOB_ID_RE.search(u))}
 
 
-def scrape(terms: list[str], locations: list[str], max_pages: int = 2,
-           seen_ids: set[str] | None = None) -> tuple[pd.DataFrame, list[dict]]:
+def scrape(terms: list[str], locations: list[str], max_pages: int = 2) -> tuple[pd.DataFrame, list[dict]]:
     """Fetch every (role slug × location) page once; attribute rows to all terms sharing the slug.
 
-    With seen_ids (incremental mode), stop paging a role/location at the first page
-    whose listings were all seen in earlier runs."""
+    Pages aren't date-ordered, so every role/location reads up to max_pages; paging stops
+    early only when a page returns no jobs (or nothing but repeats of earlier pages)."""
     slug_terms: dict[str, list[str]] = {}
     for t in terms:
         for s in ROLE_SLUGS.get(t, []):
@@ -194,7 +193,7 @@ def scrape(terms: list[str], locations: list[str], max_pages: int = 2,
                              "search_location": loc, "status": "skipped", "rows": 0, "runtime_s": 0.0,
                              "reason": "no Wellfound page for this location", "n429": 0, "attempts": 0})
                 continue
-            seen_ids: set[str] = set()
+            page_ids: set[str] = set()
             t0 = time.perf_counter()
             status, reason, n429, pages, rows, dropped = "empty", "", 0, 0, [], 0
             for page in range(1, max_pages + 1):
@@ -204,8 +203,8 @@ def scrape(terms: list[str], locations: list[str], max_pages: int = 2,
                 st, why, jobs, k = fetch(sess, page_url(slug, loc_slug, page))
                 n429 += k
                 pages += 1
-                new = [j for j in jobs if str(j.get("id")) not in seen_ids]
-                seen_ids.update(str(j.get("id")) for j in new)
+                new = [j for j in jobs if str(j.get("id")) not in page_ids]
+                page_ids.update(str(j.get("id")) for j in new)
                 if loc_slug == "r":
                     dropped += sum(not open_to_india(j) for j in new)
                     rows += [j for j in new if open_to_india(j)]
@@ -216,9 +215,6 @@ def scrape(terms: list[str], locations: list[str], max_pages: int = 2,
                 elif st not in ("ok", "empty"):
                     reason = f"page {page}: {st} {why}".strip()
                 if st != "ok" or not new:
-                    break
-                if seen_ids is not None and all(str(j.get("id")) in seen_ids for j in jobs):
-                    reason = (reason + f" stopped at page {page}: all ids already seen").strip()
                     break
             else:
                 reason = (reason + f" hit page cap ({max_pages}); more pages may exist").strip()

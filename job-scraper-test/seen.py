@@ -1,8 +1,8 @@
 """seen_jobs.csv: every job the pipeline has ever seen (kept or excluded).
 
 A job from this run is "seen" if its dedupe key (normalized company|title|city) or any
-of its normalized URLs matches an earlier entry. Excluded jobs are recorded too, so the
-Wellfound incremental mode can stop at pages whose ids were all seen before.
+of its normalized URLs matches an earlier entry. Excluded jobs are recorded too, so they
+aren't re-reported every run.
 Entries not seen for SEEN_RETENTION_DAYS are pruned (a re-posted old job would then be
 age-filtered anyway).
 """

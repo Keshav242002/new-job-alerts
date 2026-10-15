@@ -268,9 +268,18 @@ OFF_ROLE_TITLE_RE = re.compile(
     r"\bautomation\s+test|\bdevops\b|\bsre\b|site\s+reliability|\bplatform\b|\bdata\s+analyst\b|\bsales\b|"
     r"\bconsultant\b|\badministrator\b|\badmin\b", re.I)
 AI_ML_TITLE_RE = re.compile(
-    r"\b(?:ai|ml|gen\s?ai|llm|machine\s+learning|deep\s+learning|data\s+scien\w*|applied\s+scien\w*|nlp|computer\s+vision)\b",
+    r"\b(?:ai|ml|ai/ml|aiml|gen\s?ai|llms?|rag|machine\s+learning|deep\s+learning|data\s+scien\w*|applied\s+scien\w*|nlp|computer\s+vision)\b",
     re.I)
-PYTHON_RE = re.compile(r"\bpython\b", re.I)
+# ai_ml_role only when the AI title doesn't also name app/backend work.
+AI_ML_BUILDER_TITLE_RE = re.compile(r"\bback[\s\-]?end\b|\bfull[\s\-]?stack\b|\bdjango\b|\bfast\s?api\b|\bflutter\b|\bmobile\b",
+                                    re.I)
+# IT services / consulting employers: flag only.
+SERVICE_COMPANY_RE = re.compile(
+    r"\b(?:tcs|tata\s+consultancy|infosys|wipro|capco|accenture|cognizant|hcl(?:\s?tech)?|tech\s?mahindra|capgemini|"
+    r"ltimindtree|lti\s?mindtree|larsen\s*&?\s*toubro\s+infotech|coforge|mphasis|hexaware|persistent\s+systems|"
+    r"persistent|globallogic|virtusa|birlasoft|ntt\s?data|deloitte|ernst\s*&\s*young|ey|kpmg|pwc|"
+    r"pricewaterhouse\w*|ibm|dxc|zensar|cyient|sonata\s+software|sonata|ascendion|nagarro|epam|sopra(?:\s+steria)?|"
+    r"atos|genpact|kpit|ust(?:\s+global)?)\b", re.I)
 # Allowed locations (any listed city matches). Remote = is_remote or "remote"/"work from home" in location.
 ALLOWED_CITY_RE = re.compile(
     r"bangalore|bengaluru|gurugram|gurgaon|\bnoida\b|greater\s+noida|\bdelhi\b|new\s+delhi|\bncr\b|ghaziabad|faridabad|"
@@ -290,7 +299,7 @@ def location_check(location, is_remote) -> str:
 
 
 # Stable rule names (exclusion_reason may append details in parentheses).
-RULES = ["older_than_window", "location", "no_skill_match", "job_type", "fresher_only", "seniority_title",
+RULES = ["older_than_14d", "location", "no_skill_match", "job_type", "fresher_only", "seniority_title",
          "other_stack_title", "off_role_title", "min_exp>4", "fullstack_angular_vue_only"]
 
 
@@ -303,14 +312,13 @@ def excluded_job_type(title: str, job_type) -> str | None:
     return f"title: {m.group(0)}" if m else None
 
 
-def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> pd.DataFrame:
-    """window_hours: a number, or a per-row Series (e.g. the widest window among a job's sources)."""
+def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, max_age_days: float | None = None) -> pd.DataFrame:
+    """max_age_days: max posting age (default config.MAX_POSTING_AGE_DAYS) — independent of the fetch window."""
     df = df.copy()
-    window_hours = config.HOURS_OLD if window_hours is None else window_hours
+    max_age_days = config.MAX_POSTING_AGE_DAYS if max_age_days is None else max_age_days
     text = df["title"].fillna("") + " \n " + df["description"].fillna("")
-    hours = (window_hours.reindex(df.index) if isinstance(window_hours, pd.Series)
-             else pd.Series(float(window_hours), index=df.index))
-    cutoffs = (ref_date - pd.to_timedelta(hours, unit="h")).dt.normalize()  # date_posted is day-granular
+    cutoff_all = (ref_date - pd.Timedelta(days=max_age_days)).normalize()  # date_posted is day-granular
+    cutoffs = pd.Series(cutoff_all, index=df.index)
     job_types = df["job_type"] if "job_type" in df.columns else pd.Series([None] * len(df), index=df.index)
     reasons, flags = [], []
     approxs = df["date_approx"] if "date_approx" in df.columns else pd.Series([None] * len(df), index=df.index)
@@ -321,7 +329,7 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> 
             df["location"], remotes):
         r = []
         if pd.notna(dp) and dp < cutoff:
-            r.append(f"older_than_window ({dp.date()})")
+            r.append(f"older_than_{max_age_days:g}d ({dp.date()})")
         loc_status = location_check(loc, rem)
         if loc_status == "excluded":
             r.append(f"location ({str(loc)[:40]})")
@@ -363,7 +371,9 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, window_hours=None) -> 
             f.append("staffing_agency")
         if loc_status == "unclear":
             f.append("location_unclear")
-        if AI_ML_TITLE_RE.search(title) and PYTHON_RE.search(t):
+        if SERVICE_COMPANY_RE.search(company):
+            f.append("service_company")
+        if AI_ML_TITLE_RE.search(title) and not AI_ML_BUILDER_TITLE_RE.search(title):
             f.append("ai_ml_role")
         flags.append(";".join(f))
     df["exclusion_reason"] = reasons
@@ -414,14 +424,14 @@ def main(d: Path) -> None:
     ref_date = pd.Timestamp.fromtimestamp(max((d / f"raw_{l}.csv").stat().st_mtime
                                               for l in LIBS if (d / f"raw_{l}.csv").exists()))
 
-    merged_all = apply_rules(dedupe(raw), ref_date)
+    merged_all = apply_rules(dedupe(raw), ref_date, config.HOURS_OLD / 24)
     for df_ in (merged_all,):
         df_["date_posted"] = df_["date_posted"].dt.date
     excluded = merged_all[merged_all["exclusion_reason"] != ""]
     kept = merged_all[merged_all["exclusion_reason"] == ""].drop(columns=["exclusion_reason"])
     kept.to_csv(d / "merged.csv", index=False)
     excluded.to_csv(d / "excluded.csv", index=False)
-    stale_mask = excluded["exclusion_reason"].str.contains("older_than_window")
+    stale_mask = excluded["exclusion_reason"].str.contains("older_than_")
     smoke = d.name == "smoke"
 
     R: list[str] = [f"# Job scraper comparison — {'smoke test' if smoke else 'full run'}\n",

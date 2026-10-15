@@ -36,17 +36,21 @@ How the window is applied:
 
 | Source | At fetch | In process.py |
 |---|---|---|
-| LinkedIn | `hours_old = window` | date filter (day granularity) |
-| Naukri | no `hours_old` (relevance order) | date filter, Naukri-ID date when no date |
-| Wellfound | not filterable (pages aren't date-sorted) | date filter on `liveStartAt` |
-| ATS | APIs return all live postings | date filter on Greenhouse `first_published` (else `updated_at`, flagged `date_approx`), Lever `createdAt`, Ashby `publishedAt` |
+| LinkedIn | `hours_old = window` | 14-day age filter (day granularity) |
+| Naukri | no `hours_old` (relevance order) | 14-day age filter, Naukri-ID date when no date |
+| Wellfound | not filterable (pages aren't date-sorted) | 14-day age filter on `liveStartAt` |
+| ATS | APIs return all live postings | 14-day age filter on Greenhouse `first_published` (else `updated_at`, flagged `date_approx`), Lever `createdAt`, Ashby `publishedAt` |
+
+Posting age: `process.py` excludes jobs posted more than **14 days** ago
+(`config.MAX_POSTING_AGE_DAYS`, all sources, reason `older_than_14d`) — the fetch window
+only decides what is fetched; `seen_jobs.csv` stops repeats.
 
 ## Wellfound mode
 
 `run_wellfound.py --mode auto`: **full** on Sundays (IST) — up to 10 pages per
-role/location; otherwise **incremental** — up to 5 pages, stopping at the first page
-whose job ids are all already in `seen_jobs.csv`. The evening run is always incremental
-(the Sunday full sweep runs once, in the morning).
+role/location; otherwise **incremental** — up to 5 pages. Pages aren't date-ordered, so
+paging never stops on already-seen ids; it stops early only when a page returns no jobs.
+The evening run is always incremental (the Sunday full sweep runs once, in the morning).
 
 ## Actions jobs per run
 
