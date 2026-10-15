@@ -3,6 +3,7 @@
     python pipeline.py --run morning --data-dir ../data --public-dir ..
 
 Data dir (private repo checkout): new_jobs.csv (this run), new_jobs_log.csv (append-only),
+excluded.csv (this run's never-seen excluded jobs + exclusion_reason),
 seen_jobs.csv, run_history.csv, last_run_queries.csv, state/last_success.json. Public dir: runs/latest.md (counts only — no titles,
 companies or URLs; it doubles as the schedule keep-alive commit).
 
@@ -195,6 +196,14 @@ def main() -> int:
     out.to_csv(args.data_dir / "new_jobs.csv", index=False)  # this run only
     log_path = args.data_dir / "new_jobs_log.csv"  # append-only: every new job ever found
     out.to_csv(log_path, mode="a", index=False, header=not log_path.exists())
+    # this run's never-seen excluded jobs with the reason (overwritten each run)
+    exc = merged[~kept_mask & is_new].reindex(columns=["exclusion_reason"] + cols) if len(merged) else \
+        pd.DataFrame(columns=["exclusion_reason"] + cols)
+    if len(exc):
+        exc["date_posted"] = pd.to_datetime(exc["date_posted"]).dt.date
+        exc["description"] = exc["description"].fillna("").str.slice(0, config.NEW_JOBS_DESCRIPTION_CHARS)
+    exc.insert(0, "found_utc", stamp)
+    exc.to_csv(args.data_dir / "excluded.csv", index=False)
     S.update(merged, seen, is_new, now).to_csv(seen_path, index=False)
     if "ats" in sources and len(new_jobs):
         companies_path = HERE / "companies.json"

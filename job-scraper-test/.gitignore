@@ -18,3 +18,4 @@ new_jobs.csv
 run_history.csv
 last_run_queries.csv
 new_jobs_log.csv
+excluded.csv
