@@ -177,7 +177,7 @@
     "stack_india_jobs_at_bootstrap": 5,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 1
   },
   {
     "name": "GitLab",
@@ -225,7 +225,7 @@
     "stack_india_jobs_at_bootstrap": 5,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 1
+    "kept_jobs_total": 2
   },
   {
     "name": "AiPrise",
@@ -585,7 +585,7 @@
     "stack_india_jobs_at_bootstrap": 2,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 1
+    "kept_jobs_total": 3
   },
   {
     "name": "Together AI",
@@ -958,7 +958,7 @@
     "stack_india_jobs_at_bootstrap": 0,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 3
+    "kept_jobs_total": 7
   },
   {
     "name": "Human Archive",
