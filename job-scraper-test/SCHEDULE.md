@@ -5,7 +5,7 @@ Two runs a day on GitHub Actions (cron is UTC; IST = UTC+5:30).
 | Run | IST | cron (UTC) | Sources |
 |---|---|---|---|
 | Morning | 08:45 | `15 3 * * *` | LinkedIn (jobdrop), Naukri (jobspy, best-effort), Wellfound, ATS (Greenhouse/Lever/Ashby, best-effort) |
-| Evening | 18:45 | `15 13 * * *` | LinkedIn (jobdrop) |
+| Evening | 18:45 | `15 13 * * *` | LinkedIn (jobdrop), Wellfound (incremental), ATS (best-effort) |
 
 Removed (code kept, re-enable in `config.PROD_SOURCES`): **Indeed** (removed 2026-10-14) and
 **Google Jobs** (Google CAPTCHAs the Actions runner at volume).
@@ -19,8 +19,8 @@ Per source, tracked in `state/last_success.json` (`window.py`):
 - first run of a source: 72h (ATS: 30 days — postings stay live for weeks)
 - afterwards: time since that source's last successful run, minimum 24h
 
-So LinkedIn uses 24h at both runs (≈10h/14h gaps are below the minimum, so runs overlap —
-`seen_jobs.csv` removes repeats), and Naukri/Wellfound/ATS use 24h from morning to morning.
+So LinkedIn, Wellfound and ATS use 24h at both runs (≈10h/14h gaps are below the minimum,
+so runs overlap — `seen_jobs.csv` removes repeats), and Naukri uses 24h from morning to morning.
 A missed run widens the next window automatically.
 
 Per-source pacing:
@@ -45,7 +45,8 @@ How the window is applied:
 
 `run_wellfound.py --mode auto`: **full** on Sundays (IST) — up to 10 pages per
 role/location; otherwise **incremental** — up to 5 pages, stopping at the first page
-whose job ids are all already in `seen_jobs.csv`.
+whose job ids are all already in `seen_jobs.csv`. The evening run is always incremental
+(the Sunday full sweep runs once, in the morning).
 
 ## Actions jobs per run
 
@@ -55,8 +56,8 @@ Sources per run (each runs as a parallel process inside the single `pipeline` jo
 |---|---|---|
 | `linkedin` (jobdrop venv) | ✓ | ✓ |
 | `naukri` (jobspy venv) | ✓ | – |
-| `wellfound` (requests only) | ✓ | – |
-| `ats` — boards in `companies.json` (requests only) | ✓ | – |
+| `wellfound` (requests only) | ✓ | ✓ (incremental) |
+| `ats` — boards in `companies.json` (requests only) | ✓ | ✓ |
 
 All sources run as parallel processes in **one** Actions job (`pipeline.py`), so no data
 leaves the runner except to the private data repo.

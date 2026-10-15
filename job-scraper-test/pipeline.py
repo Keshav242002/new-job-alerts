@@ -142,6 +142,8 @@ def main() -> int:
     ap.add_argument("--timeout-min", type=int, default=150)
     args = ap.parse_args()
     args.data_dir = args.data_dir.resolve()
+    if args.run == "evening" and args.wellfound_mode == "auto":
+        args.wellfound_mode = "incremental"  # the Sunday full sweep happens in the morning run only
 
     now = pd.Timestamp(datetime.now(timezone.utc)).tz_localize(None)
     state = args.data_dir / "state" / "last_success.json"

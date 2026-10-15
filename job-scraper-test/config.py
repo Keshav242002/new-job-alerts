@@ -133,7 +133,7 @@ PROD_SOURCES = {
 # Which sources each scheduled run fetches (see SCHEDULE.md).
 PROD_RUNS = {
     "morning": ["linkedin", "naukri", "wellfound", "ats"],
-    "evening": ["linkedin"],
+    "evening": ["linkedin", "wellfound", "ats"],  # repeats of the morning are removed by seen_jobs
 }
 # Only these sources fail the workflow when they fail; the rest are best-effort (logged in
 # runs/latest.md, run still passes). A failed data push always fails the run.

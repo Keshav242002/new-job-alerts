@@ -6,7 +6,7 @@ name: Job alerts pipeline
 on:
   schedule:
     - cron: "15 3 * * *"   # 08:45 IST — morning: LinkedIn, Wellfound (+ best-effort Naukri, ATS)
-    - cron: "15 13 * * *"  # 18:45 IST — evening: LinkedIn only
+    - cron: "15 13 * * *"  # 18:45 IST — evening: LinkedIn, Wellfound (+ best-effort ATS)
   workflow_dispatch:
     inputs:
       run:
