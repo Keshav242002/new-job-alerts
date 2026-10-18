@@ -189,6 +189,7 @@ FREEHIRE_QUERY_PARAMS = {
     "python": _DEV_TITLE, '"full stack python"': _TITLE_ONLY, **{q: _GENERIC for q in FREEHIRE_GENERIC_QUERIES},
 }
 FREEHIRE_QUERY_MAX_PAGES = {q: 4 for q in FREEHIRE_GENERIC_QUERIES}  # else FREEHIRE_MAX_PAGES
+FREEHIRE_BACKFILL_MAX_PAGES = 10  # generic queries in --backfill ("software engineer": 613 jobs in 14 days)
 # Geography params are ORed with each other, so remote is a separate pass: worldwide remote jobs
 # (remote jobs located in India already come back in the India pass).
 FREEHIRE_PASSES = {"India": {"countries": "IN"}, "Remote": {"work_mode": "remote", "regions": "global"}}

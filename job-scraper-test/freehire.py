@@ -15,6 +15,7 @@ Usage: python run_freehire.py [--out DIR] [--terms "A;B"] [--max-pages N]
 """
 from __future__ import annotations
 
+import re
 import time
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
@@ -51,6 +52,29 @@ def _salary(e: dict) -> str | None:
     return " ".join(x for x in (e.get("salary_currency"), rng, e.get("salary_period")) if x)
 
 
+# freehire has no canonical company name (its company record repeats the raw value), so clean it here.
+# startup.jobs copies Workday legal-entity names: "0075 eBay (UK) Limited", "C_001 Transaction Network ...",
+# "LE9220 Veradigm ...". Stripped for that source only, so names like "360 Degree Cloud" elsewhere survive.
+ENTITY_PREFIX_RE = re.compile(r"^(?:[A-Z]{1,3}_?\d{2,}|\d{2,})\s+(?=\S)")
+ENTITY_SUFFIX_RE = re.compile(r"\s*\((?:[A-Z]{1,3}_?)?\d{3,}\)$")  # "... (LE3071)"
+# Oracle / Zoho / Teamtailor tenants show up as "jpmc.fa.oraclecloud.com/CX", "fyerx.zohorecruit.in"
+HOST_RE = re.compile(r"^(?:https?://)?([a-z0-9-]+(?:\.[a-z0-9-]+)+)(?:/\S*)?$", re.I)
+GENERIC_LABELS = {"www", "careers", "jobs", "apply", "career", "job", "boards", "job-boards"}
+
+
+def clean_company(company: str | None, url: str | None, source: str | None = None) -> str | None:
+    if not company or not company.strip():
+        return None
+    c = company.strip()
+    if m := HOST_RE.match(c):
+        hosts = [m.group(1)] + ([urlsplit(url).hostname] if url else [])
+        labels = [h.split(".")[0] for h in hosts if h]
+        return next((label for label in labels if label.lower() not in GENERIC_LABELS), c)
+    if source == "startupjobs":
+        c = ENTITY_PREFIX_RE.sub("", c)
+    return ENTITY_SUFFIX_RE.sub("", c).strip() or company.strip()
+
+
 def open_to_india(job: dict) -> bool:
     """Remote pass: keep jobs with no country restriction, or located in / open to India."""
     countries = [c.lower() for c in job.get("countries") or []]
@@ -66,7 +90,7 @@ def to_schema(jobs: list[dict], term: str, loc: str) -> pd.DataFrame:
             "source_lib": "freehire",
             "site": "freehire",
             "title": j.get("title"),
-            "company": j.get("company") or None,
+            "company": clean_company(j.get("company"), j.get("url"), j.get("source")),
             "location": j.get("location") or ", ".join(j.get("cities") or []) or None,
             "is_remote": j.get("work_mode") == "remote",
             "date_posted": _date(j.get("posted_at")),
@@ -148,6 +172,8 @@ def scrape(queries: list[str], passes: dict[str, dict], max_pages: int = config.
     first = True
     for q in queries:
         cap = config.FREEHIRE_QUERY_MAX_PAGES.get(q, max_pages)
+        if backfill and q in config.FREEHIRE_GENERIC_QUERIES:
+            cap = config.FREEHIRE_BACKFILL_MAX_PAGES
         for loc, geo in passes.items():
             params = query_params(q, geo, page_size, backfill)
             t0 = time.perf_counter()

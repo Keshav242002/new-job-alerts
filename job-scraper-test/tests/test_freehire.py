@@ -388,3 +388,28 @@ def test_backfill_flag_reaches_scrape(tmp_path, monkeypatch):
                      freehire_backfill=True)
     argv, _ = pipeline.build_commands(["freehire"], {"freehire": 24}, args, Path("/tmp/w"))["freehire"]
     assert argv[-1] == "--backfill"
+
+
+def test_clean_company():
+    cc = freehire.clean_company
+    assert cc("C_001 Transaction Network Services, Inc.", None, "startupjobs") == "Transaction Network Services, Inc."
+    assert cc("0075 eBay (UK) Limited", None, "startupjobs") == "eBay (UK) Limited"
+    assert cc("India (BC starts with 25xxx) (LE3071)", None, "startupjobs") == "India (BC starts with 25xxx)"
+    url = "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/job/210791269"
+    assert cc("jpmc.fa.oraclecloud.com/CX", url, "oracle") == "jpmc"
+    # tenant host in the company value wins over a custom-domain URL ("careers" is skipped either way)
+    assert cc("chalhoubgroup.teamtailor.com", "https://careers.chalhoubgroup.com/jobs/1", "teamtailor") == "chalhoubgroup"
+    # untouched: ordinary names, digit-led names from other sources, empty
+    assert cc("Flutter Entertainment", None, "workday") == "Flutter Entertainment"
+    assert cc("360 Degree Cloud", None, "greenhouse") == "360 Degree Cloud"
+    assert cc("eBay (UK) Limited", None, "startupjobs") == "eBay (UK) Limited"
+    assert cc("", None) is None
+    row = freehire.to_schema([job(1, company="jpmc.fa.oraclecloud.com/CX", url=url, source="oracle")], "q", "India")
+    assert row["company"][0] == "jpmc"
+
+
+def test_backfill_raises_generic_page_cap():
+    pages = [page(50, 5000, i * 50) for i in range(10)]
+    sess = FakeSession(pages)
+    _, recs = freehire.scrape(["SDE"], {"India": {}}, 3, 50, sess, backfill=True)
+    assert len(sess.calls) == config.FREEHIRE_BACKFILL_MAX_PAGES == 10 and "hit page cap (10)" in recs[0]["reason"]
