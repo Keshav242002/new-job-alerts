@@ -167,13 +167,19 @@ ATS_DELAY_RANGE = (0.5, 1.5)  # between companies
 #   "dart flutter" 2 = "dart" 2)
 # - quoted "SDE 1" (title) 1 job vs 20 unquoted (mostly SDE II/III); '"SDE 2" backend' returns the same 5 jobs
 #   as '"SDE 2"' (the bare word neither narrows nor widens; fully quoted "SDE 2 backend" gives 2)
-FREEHIRE_QUERIES = ["flutter", "dart flutter", "django", "fastapi", "python backend", "python developer",
-                    "full stack python", '"SDE 1"', '"SDE 2" backend']
-# Per-query overrides of FREEHIRE_PARAMS: titles only for SDE and the broad python queries
-# (matching descriptions let in data engineering / test automation / analyst roles)
+# - title-only, a trailing word doesn't filter: "python backend" = "python developer" = "python" (88 jobs),
+#   "full stack python" = "full stack" (273); quoted "full stack python" requires all three (16)
+FREEHIRE_QUERIES = ["flutter", "dart flutter", "django", "fastapi", "python", '"full stack python"',
+                    '"SDE 1"', '"SDE 2" backend']
+# Per-query overrides of FREEHIRE_PARAMS: these match titles only (descriptions let in data / QA / analyst roles).
+# "python" is also limited to dev categories: drops data analytics/engineering, QA, SRE, devops, management
+# (88 -> 67) while keeping every Python developer / software engineer title. "software_engineering" is where
+# freehire files most plain dev titles; ai_engineering kept because AI roles are only flagged downstream.
 _TITLE_ONLY = {"q_fields": "title"}
-FREEHIRE_QUERY_PARAMS = {q: _TITLE_ONLY for q in ("python backend", "python developer", "full stack python",
-                                                  '"SDE 1"', '"SDE 2" backend')}
+FREEHIRE_QUERY_PARAMS = {
+    "python": {**_TITLE_ONLY, "category": "backend,fullstack,mobile,software_engineering,ai_engineering"},
+    '"full stack python"': _TITLE_ONLY, '"SDE 1"': _TITLE_ONLY, '"SDE 2" backend': _TITLE_ONLY,
+}
 # Geography params are ORed with each other, so remote is a separate pass: worldwide remote jobs
 # (remote jobs located in India already come back in the India pass).
 FREEHIRE_PASSES = {"India": {"countries": "IN"}, "Remote": {"work_mode": "remote", "regions": "global"}}

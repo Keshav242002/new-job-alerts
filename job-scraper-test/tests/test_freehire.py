@@ -352,3 +352,10 @@ def test_add_experience_all_none_max_from_csv():
                                  "Django Dev,Django,,\n"))
     out = P.add_experience(df)
     assert list(out["min_exp"][:1]) == [3] and out["max_exp"].isna().all()
+
+
+def test_per_query_params():
+    _, _, sess = scrape([page(1, 1), page(1, 1)], queries=("python", "django"))
+    py, dj = sess.calls
+    assert py["q_fields"] == "title" and "software_engineering" in py["category"]
+    assert dj["q_fields"] == "title,description" and "category" not in dj

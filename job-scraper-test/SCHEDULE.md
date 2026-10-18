@@ -25,7 +25,7 @@ curl -X POST https://api.github.com/repos/Keshav242002/new-job-alerts/actions/wo
 ```
 
 **freehire** (`freehire.py`, on/off: `config.FREEHIRE_ENABLED`) — keyless freehire.me search API over
-company ATS boards. 9 queries (`config.FREEHIRE_QUERIES`) × 2 passes (India; worldwide remote, kept only if
+company ATS boards. 8 queries (`config.FREEHIRE_QUERIES`, some title-only or category-limited) × 2 passes (India; worldwide remote, kept only if
 open to India), up to 3 pages of 50, 1 s between requests, 20 s timeout, one retry on 429/5xx. Telegram
 posts and senior+ seniority are excluded at the API. When the description states no experience,
 freehire's AI estimate fills `min_exp` (flag `exp_estimated`).
