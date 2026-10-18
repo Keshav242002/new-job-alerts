@@ -60,6 +60,9 @@ def build_commands(sources: list[str], windows: dict[str, int], args, work: Path
                              + extra, ["wellfound"])
     if "ats" in sources:
         cmds["ats"] = ([js, "run_ats.py", "--out", str(work / "ats")], ["ats"])
+    if "freehire" in sources:
+        cmds["freehire"] = ([js, "run_freehire.py", "--out", str(work / "freehire")]
+                            + (["--backfill"] if args.freehire_backfill else []), ["freehire"])
     return cmds
 
 
@@ -140,6 +143,8 @@ def main() -> int:
     ap.add_argument("--sources", help="override the run's sources (comma-separated)")
     ap.add_argument("--terms", help="override search terms (semicolon-separated; for testing)")
     ap.add_argument("--locations", help="override non-LinkedIn locations (semicolon-separated; for testing)")
+    ap.add_argument("--freehire-backfill", action="store_true",
+                    help="one-off: freehire generic role queries fetch 14 days instead of 2 (see config)")
     ap.add_argument("--timeout-min", type=int, default=150)
     args = ap.parse_args()
     args.data_dir = args.data_dir.resolve()

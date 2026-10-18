@@ -12,8 +12,8 @@ run-name: >-
 # GitHub crons are only a backup, 2 hours later; they skip when that run type already succeeded.
 on:
   schedule:
-    - cron: "15 5 * * *"   # 10:45 IST — backup morning: LinkedIn, Wellfound (+ best-effort Naukri, ATS)
-    - cron: "15 15 * * *"  # 20:45 IST — backup evening: LinkedIn, Wellfound (+ best-effort ATS)
+    - cron: "15 5 * * *"   # 10:45 IST — backup morning: LinkedIn, Wellfound (+ best-effort Naukri, ATS, freehire)
+    - cron: "15 15 * * *"  # 20:45 IST — backup evening: LinkedIn, Wellfound (+ best-effort ATS, freehire)
   workflow_dispatch:
     inputs:
       run:
@@ -30,6 +30,10 @@ on:
         description: "Optional: comma-separated sources to run instead of the run's default (testing)"
         type: string
         default: ""
+      freehire_backfill:
+        description: "One-off: freehire generic role queries fetch 14 days instead of 2"
+        type: boolean
+        default: false
 
 permissions:
   contents: write  # runs/latest.md keep-alive + companies.json commits to this repo
@@ -45,6 +49,7 @@ env:
   RUN_NAME: ${{ github.event_name == 'schedule' && ((github.event.schedule == '15 15 * * *' || github.event.schedule == '15 13 * * *') && 'evening' || 'morning') || inputs.run || 'morning' }}
   WELLFOUND_MODE: ${{ inputs.wellfound_mode || 'auto' }}
   SOURCES: ${{ inputs.sources || '' }}
+  FREEHIRE_BACKFILL: ${{ inputs.freehire_backfill && '1' || '' }}
 
 jobs:
   pipeline:
@@ -121,7 +126,7 @@ jobs:
         run: |
           set +e
           venv-jobspy/bin/python pipeline.py --run "$RUN_NAME" --wellfound-mode "$WELLFOUND_MODE" \
-            ${SOURCES:+--sources "$SOURCES"} --data-dir ../data --public-dir ..
+            ${SOURCES:+--sources "$SOURCES"} ${FREEHIRE_BACKFILL:+--freehire-backfill} --data-dir ../data --public-dir ..
           echo "PIPELINE_EXIT=$?" >> "$GITHUB_ENV"
 
       - name: Push data (private repo)

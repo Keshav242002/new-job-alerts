@@ -129,11 +129,14 @@ PROD_SOURCES = {
     # "google": ("jobdrop", "google"),  # dropped 2026-10-14: Google CAPTCHAs the Actions runner (code kept)
     "wellfound": ("wellfound", "wellfound"),
     "ats": ("ats", "ats"),             # Greenhouse / Lever / Ashby boards from companies.json
+    "freehire": ("freehire", "freehire"),  # freehire.me search API (ATS-sourced aggregator)
 }
 # Which sources each scheduled run fetches (see SCHEDULE.md).
+FREEHIRE_ENABLED = True  # freehire on/off for both runs
 PROD_RUNS = {
-    "morning": ["linkedin", "naukri", "wellfound", "ats"],
-    "evening": ["linkedin", "wellfound", "ats"],  # repeats of the morning are removed by seen_jobs
+    "morning": ["linkedin", "naukri", "wellfound", "ats"] + (["freehire"] if FREEHIRE_ENABLED else []),
+    "evening": ["linkedin", "wellfound", "ats"]  # repeats of the morning are removed by seen_jobs
+    + (["freehire"] if FREEHIRE_ENABLED else []),
 }
 # Only these sources fail the workflow when they fail; the rest are best-effort (logged in
 # runs/latest.md, run still passes). A failed data push always fails the run.
@@ -158,3 +161,48 @@ BROWSER_CONNECT_RETRIES = 2  # retries for headless Chrome 'Failed to connect to
 
 # ATS (Greenhouse/Lever/Ashby public APIs)
 ATS_DELAY_RANGE = (0.5, 1.5)  # between companies
+
+# freehire.me (keyless public search API; see freehire.py). Checked live 2026-10-18:
+# - unquoted words behave like AND, not OR as the docs say ("python backend" 308 vs "python" 309;
+#   "dart flutter" 2 = "dart" 2)
+# - quoted "SDE 1" (title) 1 job vs 20 unquoted (mostly SDE II/III); '"SDE 2" backend' returns the same 5 jobs
+#   as '"SDE 2"' (the bare word neither narrows nor widens; fully quoted "SDE 2 backend" gives 2)
+# - title-only, a trailing word doesn't filter: "python backend" = "python developer" = "python" (88 jobs),
+#   "full stack python" = "full stack" (273); quoted "full stack python" requires all three (16)
+# - unquoted SDE (title) matches SDE 1/2, SDE-II, SDE III, and SDET (QA; removed by the dev-category filter)
+FREEHIRE_QUERIES = ["flutter", "dart flutter", "django", "fastapi", "python", '"full stack python"',
+                    "SDE", '"software engineer"', '"software developer"', '"software development engineer"']
+# Per-query overrides of FREEHIRE_PARAMS (a None value removes the base param). These match titles only
+# (descriptions let in data / QA / analyst roles); "python" and the generic role queries are also limited to dev
+# categories: for "python" this drops data analytics/engineering, QA, SRE, devops, management (88 -> 67) while
+# keeping every Python developer / software engineer title. "software_engineering" is where freehire files most
+# plain dev titles; ai_engineering kept because AI roles are only flagged downstream.
+_TITLE_ONLY = {"q_fields": "title"}
+_DEV_TITLE = {**_TITLE_ONLY, "category": "backend,fullstack,mobile,software_engineering,ai_engineering"}
+# Generic role queries return far more jobs ("software engineer": 613 posted in 14 days vs 43 first recorded in
+# 2), so they only fetch jobs freehire first recorded in the last 2 days: the pipeline runs twice a day and
+# seen_jobs dedupes. run_freehire.py --backfill uses the 14-day posted window for them once instead.
+FREEHIRE_GENERIC_QUERIES = ["SDE", '"software engineer"', '"software developer"', '"software development engineer"']
+_GENERIC = {**_DEV_TITLE, "posted_within_days": None, "open_within_days": 2}
+FREEHIRE_BACKFILL_PARAMS = {"posted_within_days": MAX_POSTING_AGE_DAYS, "open_within_days": None}
+FREEHIRE_QUERY_PARAMS = {
+    "python": _DEV_TITLE, '"full stack python"': _TITLE_ONLY, **{q: _GENERIC for q in FREEHIRE_GENERIC_QUERIES},
+}
+FREEHIRE_QUERY_MAX_PAGES = {q: 4 for q in FREEHIRE_GENERIC_QUERIES}  # else FREEHIRE_MAX_PAGES
+FREEHIRE_BACKFILL_MAX_PAGES = 10  # generic queries in --backfill ("software engineer": 613 jobs in 14 days)
+# Geography params are ORed with each other, so remote is a separate pass: worldwide remote jobs
+# (remote jobs located in India already come back in the India pass).
+FREEHIRE_PASSES = {"India": {"countries": "IN"}, "Remote": {"work_mode": "remote", "regions": "global"}}
+FREEHIRE_PARAMS = {
+    "posted_within_days": MAX_POSTING_AGE_DAYS, "sort": "posted_at", "order": "desc",
+    "q_fields": "title,description",  # "company" would match e.g. Flutter Entertainment for "flutter"
+    # most ATS jobs carry no seniority; seniority=junior,middle would drop them, so exclude senior+ instead
+    "seniority_exclude": "senior,lead,staff,principal,c_level",
+    "source_exclude": "telegram",  # t.me channel posts: no company URL, ~120-char descriptions
+    "description_format": "text",
+}
+FREEHIRE_PAGE_SIZE = 50
+FREEHIRE_MAX_PAGES = 3  # 150 jobs per query/pass
+FREEHIRE_DELAY_S = 1.0  # between requests
+FREEHIRE_TIMEOUT_S = 20
+FREEHIRE_RETRY_BACKOFF_S = 10  # one retry on 429/5xx/timeout (Retry-After honoured if smaller)

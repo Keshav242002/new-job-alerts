@@ -60,9 +60,15 @@ def add_experience(df: pd.DataFrame) -> pd.DataFrame:
     has = df["min_exp"].notna()
     df["exp_source"] = has.map({True: "structured", False: None})
     parsed = (df.loc[~has, "title"].fillna("") + " \n " + df.loc[~has, "description"].fillna("")).map(parse_experience)
-    df.loc[~has, "min_exp"] = parsed.map(lambda t: t[0])
-    df.loc[~has, "max_exp"] = parsed.map(lambda t: t[1])
+    # astype(float): an all-None object column can't be set into float64 (pandas 3 raises TypeError)
+    df.loc[~has, "min_exp"] = parsed.map(lambda t: t[0]).astype(float)
+    df.loc[~has, "max_exp"] = parsed.map(lambda t: t[1]).astype(float)
     df.loc[~has & df["min_exp"].notna(), "exp_source"] = "regex"
+    # freehire's AI estimate (exp_estimate column, freehire rows only): last resort when nothing is stated
+    if "exp_estimate" in df.columns:
+        est = df["min_exp"].isna() & pd.to_numeric(df["exp_estimate"], errors="coerce").notna()
+        df.loc[est, "min_exp"] = pd.to_numeric(df.loc[est, "exp_estimate"])
+        df.loc[est, "exp_source"] = "estimate"
     return df
 
 
@@ -180,8 +186,10 @@ def dedupe(df: pd.DataFrame) -> pd.DataFrame:
         best["search_terms"] = ";".join(sorted(g["search_term"].dropna().unique()))
         best["dup_count"] = len(g)
         best["urls"] = ";".join(sorted({u for u in g["_url"] if u}))
-        # experience: structured beats regex; otherwise smallest parsed min
+        # experience: structured beats regex beats freehire's estimate; otherwise smallest parsed min
         s = g[g["exp_source"] == "structured"]
+        if not len(s):
+            s = g[g["exp_source"] == "regex"]
         pool = s if len(s) else g[g["min_exp"].notna()]
         if len(pool):
             r = pool.sort_values("min_exp").iloc[0]
@@ -323,10 +331,11 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, max_age_days: float | 
     reasons, flags = [], []
     approxs = df["date_approx"] if "date_approx" in df.columns else pd.Series([None] * len(df), index=df.index)
     remotes = df["is_remote"] if "is_remote" in df.columns else pd.Series([None] * len(df), index=df.index)
-    for t, title, mn, mx, dp, st, desc, jt, cutoff, approx, company, loc, rem in zip(
+    exp_sources = df["exp_source"] if "exp_source" in df.columns else pd.Series([None] * len(df), index=df.index)
+    for t, title, mn, mx, dp, st, desc, jt, cutoff, approx, company, loc, rem, es in zip(
             text, df["title"].fillna(""), df["min_exp"], df["max_exp"], df["date_posted"],
             df["search_terms"], df["description"].fillna(""), job_types, cutoffs, approxs, df["company"].fillna(""),
-            df["location"], remotes):
+            df["location"], remotes, exp_sources):
         r = []
         if pd.notna(dp) and dp < cutoff:
             r.append(f"older_than_{max_age_days:g}d ({dp.date()})")
@@ -355,6 +364,8 @@ def apply_rules(df: pd.DataFrame, ref_date: pd.Timestamp, max_age_days: float | 
         f = []
         if not has_desc and not SKILL_RE.search(title):
             f.append("no_description")
+        if es == "estimate":
+            f.append("exp_estimated")
         if pd.isna(mn):
             f.append("exp_unknown")
             if SENIOR_RE.search(title):

@@ -7,8 +7,8 @@ the `run` input decides the sources.
 
 | Run | Primary (cron-job.org) | Backup GitHub cron (UTC) | Sources |
 |---|---|---|---|
-| Morning | 08:45 IST, `run=morning` | 10:45 IST, `15 5 * * *` | LinkedIn (jobdrop), Naukri (jobspy, best-effort), Wellfound, ATS (Greenhouse/Lever/Ashby, best-effort) |
-| Evening | 18:45 IST, `run=evening` | 20:45 IST, `15 15 * * *` | LinkedIn (jobdrop), Wellfound (incremental), ATS (best-effort) |
+| Morning | 08:45 IST, `run=morning` | 10:45 IST, `15 5 * * *` | LinkedIn (jobdrop), Naukri (jobspy, best-effort), Wellfound, ATS (Greenhouse/Lever/Ashby, best-effort), freehire (best-effort) |
+| Evening | 18:45 IST, `run=evening` | 20:45 IST, `15 15 * * *` | LinkedIn (jobdrop), Wellfound (incremental), ATS (best-effort), freehire (best-effort) |
 
 The backup crons start with a guard: if a successful run of the same type (run title
 `morning`/`evening`, or `backup …`) finished in the last 6 hours, the backup exits as success
@@ -23,6 +23,12 @@ curl -X POST https://api.github.com/repos/Keshav242002/new-job-alerts/actions/wo
   -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $TOKEN" \
   -H "X-GitHub-Api-Version: 2022-11-28" -d '{"ref":"main","inputs":{"run":"morning"}}'
 ```
+
+**freehire** (`freehire.py`, on/off: `config.FREEHIRE_ENABLED`) — keyless freehire.me search API over
+company ATS boards. 10 queries (`config.FREEHIRE_QUERIES`, some title-only or category-limited) × 2 passes (India; worldwide remote, kept only if
+open to India), up to 3 pages of 50, 1 s between requests, 20 s timeout, one retry on 429/5xx. Telegram
+posts and senior+ seniority are excluded at the API. When the description states no experience,
+freehire's AI estimate fills `min_exp` (flag `exp_estimated`).
 
 Removed (code kept, re-enable in `config.PROD_SOURCES`): **Indeed** (removed 2026-10-14) and
 **Google Jobs** (Google CAPTCHAs the Actions runner at volume).
@@ -57,6 +63,7 @@ How the window is applied:
 | Naukri | no `hours_old` (relevance order) | 14-day age filter, Naukri-ID date when no date |
 | Wellfound | not filterable (pages aren't date-sorted) | 14-day age filter on `liveStartAt` |
 | ATS | APIs return all live postings | 14-day age filter on Greenhouse `first_published` (else `updated_at`, flagged `date_approx`), Lever `createdAt`, Ashby `publishedAt` |
+| freehire | `posted_within_days=14` (fixed, not the window); generic role queries (SDE, software engineer/developer/development engineer): `open_within_days=2` (first recorded by freehire), up to 4 pages — one-off `freehire_backfill` dispatch input / `--freehire-backfill` uses 14 days | 14-day age filter on `posted_at` |
 
 Posting age: `process.py` excludes jobs posted more than **14 days** ago
 (`config.MAX_POSTING_AGE_DAYS`, all sources, reason `older_than_14d`) — the fetch window
@@ -79,6 +86,7 @@ Sources per run (each runs as a parallel process inside the single `pipeline` jo
 | `naukri` (jobspy venv) | ✓ | – |
 | `wellfound` (requests only) | ✓ | ✓ (incremental) |
 | `ats` — boards in `companies.json` (requests only) | ✓ | ✓ |
+| `freehire` — freehire.me search API (requests only) | ✓ | ✓ |
 
 All sources run as parallel processes in **one** Actions job (`pipeline.py`), so no data
 leaves the runner except to the private data repo.
@@ -87,7 +95,7 @@ Failure handling (a source fails when <50% of its queries are ok/empty):
 
 - **LinkedIn or Wellfound** failing fails the workflow (GitHub emails you) after data and
   `runs/latest.md` are pushed.
-- **Naukri and ATS are best-effort**: their failures are listed in `runs/latest.md`
+- **Naukri, ATS and freehire are best-effort**: their failures are listed in `runs/latest.md`
   ("Failed best-effort sources") but don't fail the run.
 - A failed data push, or a bad/expired token, fails with "DATA_REPO_TOKEN expired or invalid".
   Each run logs the token's expiry date and warns when fewer than 14 days remain.
