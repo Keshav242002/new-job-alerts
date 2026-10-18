@@ -25,7 +25,7 @@ curl -X POST https://api.github.com/repos/Keshav242002/new-job-alerts/actions/wo
 ```
 
 **freehire** (`freehire.py`, on/off: `config.FREEHIRE_ENABLED`) — keyless freehire.me search API over
-company ATS boards. 8 queries (`config.FREEHIRE_QUERIES`, some title-only or category-limited) × 2 passes (India; worldwide remote, kept only if
+company ATS boards. 10 queries (`config.FREEHIRE_QUERIES`, some title-only or category-limited) × 2 passes (India; worldwide remote, kept only if
 open to India), up to 3 pages of 50, 1 s between requests, 20 s timeout, one retry on 429/5xx. Telegram
 posts and senior+ seniority are excluded at the API. When the description states no experience,
 freehire's AI estimate fills `min_exp` (flag `exp_estimated`).
@@ -63,7 +63,7 @@ How the window is applied:
 | Naukri | no `hours_old` (relevance order) | 14-day age filter, Naukri-ID date when no date |
 | Wellfound | not filterable (pages aren't date-sorted) | 14-day age filter on `liveStartAt` |
 | ATS | APIs return all live postings | 14-day age filter on Greenhouse `first_published` (else `updated_at`, flagged `date_approx`), Lever `createdAt`, Ashby `publishedAt` |
-| freehire | `posted_within_days=14` (fixed, not the window) | 14-day age filter on `posted_at` |
+| freehire | `posted_within_days=14` (fixed, not the window); generic role queries (SDE, software engineer/developer/development engineer): `open_within_days=2` (first recorded by freehire), up to 4 pages — one-off `freehire_backfill` dispatch input / `--freehire-backfill` uses 14 days | 14-day age filter on `posted_at` |
 
 Posting age: `process.py` excludes jobs posted more than **14 days** ago
 (`config.MAX_POSTING_AGE_DAYS`, all sources, reason `older_than_14d`) — the fetch window

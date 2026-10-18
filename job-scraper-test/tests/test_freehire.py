@@ -135,10 +135,10 @@ def test_remote_pass_drops_jobs_not_open_to_india():
 
 def test_request_params_and_offsets(no_sleep):
     _, recs, sess = scrape([page(50, 1000), page(50, 1000, 50), page(50, 1000, 100)],
-                             queries=['"SDE 1"'])
+                             queries=['"full stack python"'])
     assert [c["offset"] for c in sess.calls] == [0, 50, 100]
     c = sess.calls[0]
-    assert c["q"] == '"SDE 1"' and c["q_fields"] == "title" and c["countries"] == "IN" and c["limit"] == 50
+    assert c["q"] == '"full stack python"' and c["q_fields"] == "title" and c["countries"] == "IN" and c["limit"] == 50
     assert c["seniority_exclude"] == "senior,lead,staff,principal,c_level" and c["source_exclude"] == "telegram"
     assert c["posted_within_days"] == 14 and c["sort"] == "posted_at" and c["order"] == "desc"
     assert recs[0]["rows"] == 150 and "hit page cap (3)" in recs[0]["reason"]
@@ -335,7 +335,8 @@ def test_site_summary_marks_failed_freehire_without_affecting_others():
 
 
 def test_build_commands_and_runs():
-    args = Namespace(py_jobdrop="jd", py_jobspy="js", terms="A;B", locations=None, wellfound_mode="auto")
+    args = Namespace(py_jobdrop="jd", py_jobspy="js", terms="A;B", locations=None, wellfound_mode="auto",
+                     freehire_backfill=False)
     work = Path("/tmp/w")
     assert "freehire" not in pipeline.build_commands(["ats"], {"ats": 24}, args, work)
     argv, covers = pipeline.build_commands(["freehire"], {"freehire": 24}, args, work)["freehire"]
@@ -359,3 +360,31 @@ def test_per_query_params():
     py, dj = sess.calls
     assert py["q_fields"] == "title" and "software_engineering" in py["category"]
     assert dj["q_fields"] == "title,description" and "category" not in dj
+
+
+def test_generic_queries_window_cap_and_backfill():
+    pages = [page(50, 1000, i * 50) for i in range(4)]
+    _, recs, sess = scrape(pages, queries=("SDE",))
+    assert len(sess.calls) == 4 and "hit page cap (4)" in recs[0]["reason"]  # generic queries: 4 pages
+    c = sess.calls[0]
+    assert c["open_within_days"] == 2 and "posted_within_days" not in c
+    assert c["q_fields"] == "title" and "software_engineering" in c["category"]
+    bf = freehire.query_params('"software engineer"', {"countries": "IN"}, 50, backfill=True)
+    assert bf["posted_within_days"] == 14 and "open_within_days" not in bf and bf["category"] == c["category"]
+    # backfill leaves the other queries alone
+    assert freehire.query_params("django", {}, 50, backfill=True) == freehire.query_params("django", {}, 50)
+
+
+def test_backfill_flag_reaches_scrape(tmp_path, monkeypatch):
+    seen = {}
+
+    def fake(queries, passes, max_pages, page_size, backfill=False):
+        seen["backfill"] = backfill
+        return pd.DataFrame(columns=freehire.COLUMNS), [{"lib": "freehire", "site": "freehire", "status": "empty"}]
+    monkeypatch.setattr(freehire, "scrape", fake)
+    run_freehire.main(["--out", str(tmp_path), "--backfill"])
+    assert seen["backfill"] is True
+    args = Namespace(py_jobdrop="jd", py_jobspy="js", terms=None, locations=None, wellfound_mode="auto",
+                     freehire_backfill=True)
+    argv, _ = pipeline.build_commands(["freehire"], {"freehire": 24}, args, Path("/tmp/w"))["freehire"]
+    assert argv[-1] == "--backfill"

@@ -169,17 +169,26 @@ ATS_DELAY_RANGE = (0.5, 1.5)  # between companies
 #   as '"SDE 2"' (the bare word neither narrows nor widens; fully quoted "SDE 2 backend" gives 2)
 # - title-only, a trailing word doesn't filter: "python backend" = "python developer" = "python" (88 jobs),
 #   "full stack python" = "full stack" (273); quoted "full stack python" requires all three (16)
+# - unquoted SDE (title) matches SDE 1/2, SDE-II, SDE III, and SDET (QA; removed by the dev-category filter)
 FREEHIRE_QUERIES = ["flutter", "dart flutter", "django", "fastapi", "python", '"full stack python"',
-                    '"SDE 1"', '"SDE 2" backend']
-# Per-query overrides of FREEHIRE_PARAMS: these match titles only (descriptions let in data / QA / analyst roles).
-# "python" is also limited to dev categories: drops data analytics/engineering, QA, SRE, devops, management
-# (88 -> 67) while keeping every Python developer / software engineer title. "software_engineering" is where
-# freehire files most plain dev titles; ai_engineering kept because AI roles are only flagged downstream.
+                    "SDE", '"software engineer"', '"software developer"', '"software development engineer"']
+# Per-query overrides of FREEHIRE_PARAMS (a None value removes the base param). These match titles only
+# (descriptions let in data / QA / analyst roles); "python" and the generic role queries are also limited to dev
+# categories: for "python" this drops data analytics/engineering, QA, SRE, devops, management (88 -> 67) while
+# keeping every Python developer / software engineer title. "software_engineering" is where freehire files most
+# plain dev titles; ai_engineering kept because AI roles are only flagged downstream.
 _TITLE_ONLY = {"q_fields": "title"}
+_DEV_TITLE = {**_TITLE_ONLY, "category": "backend,fullstack,mobile,software_engineering,ai_engineering"}
+# Generic role queries return far more jobs ("software engineer": 613 posted in 14 days vs 43 first recorded in
+# 2), so they only fetch jobs freehire first recorded in the last 2 days: the pipeline runs twice a day and
+# seen_jobs dedupes. run_freehire.py --backfill uses the 14-day posted window for them once instead.
+FREEHIRE_GENERIC_QUERIES = ["SDE", '"software engineer"', '"software developer"', '"software development engineer"']
+_GENERIC = {**_DEV_TITLE, "posted_within_days": None, "open_within_days": 2}
+FREEHIRE_BACKFILL_PARAMS = {"posted_within_days": MAX_POSTING_AGE_DAYS, "open_within_days": None}
 FREEHIRE_QUERY_PARAMS = {
-    "python": {**_TITLE_ONLY, "category": "backend,fullstack,mobile,software_engineering,ai_engineering"},
-    '"full stack python"': _TITLE_ONLY, '"SDE 1"': _TITLE_ONLY, '"SDE 2" backend': _TITLE_ONLY,
+    "python": _DEV_TITLE, '"full stack python"': _TITLE_ONLY, **{q: _GENERIC for q in FREEHIRE_GENERIC_QUERIES},
 }
+FREEHIRE_QUERY_MAX_PAGES = {q: 4 for q in FREEHIRE_GENERIC_QUERIES}  # else FREEHIRE_MAX_PAGES
 # Geography params are ORed with each other, so remote is a separate pass: worldwide remote jobs
 # (remote jobs located in India already come back in the India pass).
 FREEHIRE_PASSES = {"India": {"countries": "IN"}, "Remote": {"work_mode": "remote", "regions": "global"}}

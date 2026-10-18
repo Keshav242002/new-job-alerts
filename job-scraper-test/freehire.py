@@ -128,23 +128,33 @@ def fetch(sess: requests.Session, params: dict) -> tuple[str, str, dict | None, 
     return last[0], (last[1] + " (after 1 retry)").strip(), None, n429
 
 
+def query_params(q: str, geo: dict, page_size: int, backfill: bool = False) -> dict:
+    """Base params + pass geography + per-query overrides (None removes a param); backfill swaps the
+    generic queries' 2-day first-recorded window for the 14-day posted window."""
+    params = {**config.FREEHIRE_PARAMS, **geo, **config.FREEHIRE_QUERY_PARAMS.get(q, {})}
+    if backfill and q in config.FREEHIRE_GENERIC_QUERIES:
+        params |= config.FREEHIRE_BACKFILL_PARAMS
+    return {k: v for k, v in params.items() if v is not None} | {"q": q, "limit": page_size}
+
+
 def scrape(queries: list[str], passes: dict[str, dict], max_pages: int = config.FREEHIRE_MAX_PAGES,
-           page_size: int = config.FREEHIRE_PAGE_SIZE,
-           sess: requests.Session | None = None) -> tuple[pd.DataFrame, list[dict]]:
-    """Run every query × pass, paging by offset until a short page, meta.total, max_pages, a page
-    with no new jobs, or a failed page (rows from earlier pages are kept)."""
+           page_size: int = config.FREEHIRE_PAGE_SIZE, sess: requests.Session | None = None,
+           backfill: bool = False) -> tuple[pd.DataFrame, list[dict]]:
+    """Run every query × pass, paging by offset until a short page, meta.total, the page cap (max_pages, or
+    config.FREEHIRE_QUERY_MAX_PAGES for that query), a page with no new jobs, or a failed page (rows from
+    earlier pages are kept)."""
     sess = sess or requests.Session()
     frames, recs = [], []
     first = True
     for q in queries:
+        cap = config.FREEHIRE_QUERY_MAX_PAGES.get(q, max_pages)
         for loc, geo in passes.items():
-            params = {**config.FREEHIRE_PARAMS, **geo, **config.FREEHIRE_QUERY_PARAMS.get(q, {}), "q": q,
-                      "limit": page_size}
+            params = query_params(q, geo, page_size, backfill)
             t0 = time.perf_counter()
             status, reason, n429, pages, rows, dropped = "error", "", 0, 0, [], 0
             try:
                 slugs: set[str] = set()
-                for page in range(max_pages):
+                for page in range(cap):
                     if not first:
                         time.sleep(config.FREEHIRE_DELAY_S)
                     first = False
@@ -167,7 +177,7 @@ def scrape(queries: list[str], passes: dict[str, dict], max_pages: int = config.
                     if st != "ok" or not new or len(jobs) < page_size or (page + 1) * page_size >= total:
                         break
                 else:
-                    reason = (reason + f" hit page cap ({max_pages}); more pages may exist").strip()
+                    reason = (reason + f" hit page cap ({cap}); more pages may exist").strip()
                 if dropped:
                     reason = (reason + f" dropped {dropped} remote jobs not open to India").strip()
                 df = to_schema(rows, q, loc)

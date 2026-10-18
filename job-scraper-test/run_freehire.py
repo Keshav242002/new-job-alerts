@@ -13,13 +13,16 @@ def main(argv=None) -> int:
     ap.add_argument("--out", default=".", help="output dir")
     ap.add_argument("--terms", help="override config.FREEHIRE_QUERIES (semicolon-separated)")
     ap.add_argument("--max-pages", type=int, default=config.FREEHIRE_MAX_PAGES, help="page cap per query/pass")
+    ap.add_argument("--backfill", action="store_true",
+                    help="one-off: generic role queries use the 14-day posted window instead of 2 days first-recorded")
     args = ap.parse_args(argv)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
     queries = args.terms.split(";") if args.terms else config.FREEHIRE_QUERIES
     try:
-        raw, recs = freehire.scrape(queries, config.FREEHIRE_PASSES, args.max_pages, config.FREEHIRE_PAGE_SIZE)
+        raw, recs = freehire.scrape(queries, config.FREEHIRE_PASSES, args.max_pages, config.FREEHIRE_PAGE_SIZE,
+                                    backfill=args.backfill)
     except Exception as e:  # noqa: BLE001 — fail soft: no rows + an error rec, the pipeline marks freehire failed
         print(f"freehire failed: {type(e).__name__}: {e}", flush=True)
         raw = pd.DataFrame(columns=freehire.COLUMNS)
