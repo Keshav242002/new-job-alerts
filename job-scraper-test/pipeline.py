@@ -60,6 +60,8 @@ def build_commands(sources: list[str], windows: dict[str, int], args, work: Path
                              + extra, ["wellfound"])
     if "ats" in sources:
         cmds["ats"] = ([js, "run_ats.py", "--out", str(work / "ats")], ["ats"])
+    if "freehire" in sources:
+        cmds["freehire"] = ([js, "run_freehire.py", "--out", str(work / "freehire")], ["freehire"])
     return cmds
 
 

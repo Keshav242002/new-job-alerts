@@ -12,8 +12,8 @@ run-name: >-
 # GitHub crons are only a backup, 2 hours later; they skip when that run type already succeeded.
 on:
   schedule:
-    - cron: "15 5 * * *"   # 10:45 IST — backup morning: LinkedIn, Wellfound (+ best-effort Naukri, ATS)
-    - cron: "15 15 * * *"  # 20:45 IST — backup evening: LinkedIn, Wellfound (+ best-effort ATS)
+    - cron: "15 5 * * *"   # 10:45 IST — backup morning: LinkedIn, Wellfound (+ best-effort Naukri, ATS, freehire)
+    - cron: "15 15 * * *"  # 20:45 IST — backup evening: LinkedIn, Wellfound (+ best-effort ATS, freehire)
   workflow_dispatch:
     inputs:
       run:
