@@ -169,8 +169,11 @@ ATS_DELAY_RANGE = (0.5, 1.5)  # between companies
 #   as '"SDE 2"' (the bare word neither narrows nor widens; fully quoted "SDE 2 backend" gives 2)
 FREEHIRE_QUERIES = ["flutter", "dart flutter", "django", "fastapi", "python backend", "python developer",
                     "full stack python", '"SDE 1"', '"SDE 2" backend']
-# Per-query overrides of FREEHIRE_PARAMS: SDE queries match titles only
-FREEHIRE_QUERY_PARAMS = {'"SDE 1"': {"q_fields": "title"}, '"SDE 2" backend': {"q_fields": "title"}}
+# Per-query overrides of FREEHIRE_PARAMS: titles only for SDE and the broad python queries
+# (matching descriptions let in data engineering / test automation / analyst roles)
+_TITLE_ONLY = {"q_fields": "title"}
+FREEHIRE_QUERY_PARAMS = {q: _TITLE_ONLY for q in ("python backend", "python developer", "full stack python",
+                                                  '"SDE 1"', '"SDE 2" backend')}
 # Geography params are ORed with each other, so remote is a separate pass: worldwide remote jobs
 # (remote jobs located in India already come back in the India pass).
 FREEHIRE_PASSES = {"India": {"countries": "IN"}, "Remote": {"work_mode": "remote", "regions": "global"}}
