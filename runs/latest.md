@@ -1,19 +1,18 @@
 # Latest run
 
-- Finished: 2026-10-26T11:52:26Z (UTC)
-- Run: morning
-- Windows (h): linkedin 24, naukri 26, wellfound 24, ats 24, freehire 24
-- raw rows 8662 → deduped 5160 → kept 398 (excluded 4762) → **new 65** (already seen 333)
+- Finished: 2026-10-26T13:37:53Z (UTC)
+- Run: evening
+- Windows (h): linkedin 24, wellfound 24, ats 24, freehire 24
+- raw rows 7046 → deduped 4209 → kept 297 (excluded 3912) → **new 18** (already seen 279)
 - Failed sources (fail the run): none
 - Failed best-effort sources (logged only): none
 
 | source | queries | ok | empty | blocked | captcha | timeout | error | rows | 429s | browser_retries | runtime_min | total_run_min | process_exit | success | kept | new |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| linkedin | 22 | 22 | 0 | 0 | 0 | 0 | 0 | 548 | 0 | 0 | 8.2 | 21.1 | 0 | True | 51 | 23 |
-| naukri | 66 | 66 | 0 | 0 | 0 | 0 | 0 | 1650 | 0 | 0 | 17.9 | 49.6 | 0 | True | 126 | 18 |
-| wellfound | 100 | 90 | 0 | 0 | 0 | 0 | 0 | 3409 | 0 | 0 | 21.1 | 21.2 | 0 | True | 74 | 4 |
-| ats | 123 | 114 | 9 | 0 | 0 | 0 | 0 | 2365 | 0 | 0 | 1.0 | 3.2 | 0 | True | 19 | 2 |
-| freehire | 20 | 12 | 8 | 0 | 0 | 0 | 0 | 690 | 0 | 0 | 0.7 | 0.7 | 0 | True | 151 | 19 |
+| linkedin | 22 | 22 | 0 | 0 | 0 | 0 | 0 | 550 | 0 | 0 | 9.1 | 20.8 | 0 | True | 52 | 13 |
+| wellfound | 100 | 90 | 0 | 0 | 0 | 0 | 0 | 3405 | 0 | 0 | 20.5 | 20.6 | 0 | True | 75 | 0 |
+| ats | 123 | 114 | 9 | 0 | 0 | 0 | 0 | 2383 | 0 | 0 | 1.0 | 3.1 | 0 | True | 21 | 1 |
+| freehire | 20 | 12 | 8 | 0 | 0 | 0 | 0 | 708 | 0 | 0 | 0.7 | 0.8 | 0 | True | 159 | 4 |
 
 ATS boards scanned:
 
@@ -21,4 +20,4 @@ ATS boards scanned:
 |---|---|---|---|---|
 | ashby | 35 | 31 | 297 | 0 |
 | greenhouse | 66 | 62 | 1214 | 0 |
-| lever | 22 | 21 | 854 | 0 |
+| lever | 22 | 21 | 872 | 0 |
