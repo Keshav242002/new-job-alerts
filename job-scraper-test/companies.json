@@ -105,7 +105,7 @@
     "stack_india_jobs_at_bootstrap": 7,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 1
   },
   {
     "name": "Acceldata",
@@ -177,7 +177,7 @@
     "stack_india_jobs_at_bootstrap": 5,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 1
+    "kept_jobs_total": 2
   },
   {
     "name": "GitLab",
@@ -958,7 +958,7 @@
     "stack_india_jobs_at_bootstrap": 0,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 19
+    "kept_jobs_total": 21
   },
   {
     "name": "Human Archive",
@@ -1085,12 +1085,13 @@
     "ats": "lever",
     "board_slug": "docsumo",
     "discovered_via": "candidate list (India-hiring companies), slug verified via API",
-    "active": true,
+    "active": false,
     "india_jobs_at_bootstrap": 6,
     "stack_india_jobs_at_bootstrap": 0,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 0,
+    "inactive_since": "2026-11-03"
   },
   {
     "name": "LaunchDarkly",
