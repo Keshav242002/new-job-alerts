@@ -1,24 +1,23 @@
 # Latest run
 
-- Finished: 2026-11-07T12:02:49Z (UTC)
-- Run: morning
-- Windows (h): linkedin 24, naukri 24, wellfound 24, ats 24, freehire 24
-- raw rows 7292 → deduped 4397 → kept 301 (excluded 4096) → **new 14** (already seen 287)
+- Finished: 2026-11-07T20:00:32Z (UTC)
+- Run: evening
+- Windows (h): linkedin 24, wellfound 24, ats 24, freehire 24
+- raw rows 6666 → deduped 3947 → kept 246 (excluded 3701) → **new 15** (already seen 231)
 - Failed sources (fail the run): none
-- Failed best-effort sources (logged only): naukri
+- Failed best-effort sources (logged only): none
 
 | source | queries | ok | empty | blocked | captcha | timeout | error | rows | 429s | browser_retries | runtime_min | total_run_min | process_exit | success | kept | new |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| linkedin | 22 | 22 | 0 | 0 | 0 | 0 | 0 | 550 | 0 | 0 | 7.5 | 19.1 | 0 | True | 42 | 12 |
-| naukri | 66 | 24 | 0 | 0 | 2 | 0 | 0 | 580 | 0 | 0 | 6.3 | 18.5 | 0 | False | 46 | 1 |
-| wellfound | 100 | 90 | 0 | 0 | 0 | 0 | 0 | 3325 | 0 | 0 | 20.0 | 20.1 | 0 | True | 56 | 2 |
-| ats | 122 | 110 | 12 | 0 | 0 | 0 | 0 | 2359 | 0 | 0 | 0.9 | 2.9 | 0 | True | 23 | 0 |
-| freehire | 20 | 12 | 8 | 0 | 0 | 0 | 0 | 478 | 0 | 0 | 0.5 | 0.6 | 0 | True | 143 | 0 |
+| linkedin | 22 | 22 | 0 | 0 | 0 | 0 | 0 | 535 | 1 | 0 | 22.8 | 35.0 | 0 | True | 37 | 14 |
+| wellfound | 100 | 90 | 0 | 0 | 0 | 0 | 0 | 3343 | 0 | 0 | 20.4 | 20.4 | 0 | True | 60 | 1 |
+| ats | 122 | 110 | 12 | 0 | 0 | 0 | 0 | 2362 | 0 | 0 | 0.3 | 2.3 | 0 | True | 23 | 0 |
+| freehire | 20 | 11 | 9 | 0 | 0 | 0 | 0 | 426 | 0 | 0 | 0.5 | 0.6 | 0 | True | 128 | 0 |
 
 ATS boards scanned:
 
 | ats | companies | with_india_jobs | india_jobs | errors |
 |---|---|---|---|---|
 | ashby | 35 | 29 | 304 | 0 |
-| greenhouse | 66 | 62 | 1236 | 0 |
+| greenhouse | 66 | 62 | 1239 | 0 |
 | lever | 21 | 19 | 819 | 0 |
