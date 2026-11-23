@@ -633,7 +633,7 @@
     "stack_india_jobs_at_bootstrap": 1,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 1
   },
   {
     "name": "HighRadius",
@@ -742,7 +742,7 @@
     "stack_india_jobs_at_bootstrap": 1,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 1
   },
   {
     "name": "SpotDraft",
@@ -958,7 +958,7 @@
     "stack_india_jobs_at_bootstrap": 0,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 33
+    "kept_jobs_total": 34
   },
   {
     "name": "Human Archive",
@@ -994,7 +994,7 @@
     "stack_india_jobs_at_bootstrap": 0,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 3
+    "kept_jobs_total": 4
   },
   {
     "name": "Groww",
