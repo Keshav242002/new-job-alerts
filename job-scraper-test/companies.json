@@ -165,7 +165,7 @@
     "stack_india_jobs_at_bootstrap": 6,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 1
+    "kept_jobs_total": 2
   },
   {
     "name": "Zscaler",
@@ -388,12 +388,13 @@
     "ats": "lever",
     "board_slug": "ConverseNow",
     "discovered_via": "web search: lever.co Bangalore India backend engineer Python job posting",
-    "active": true,
+    "active": false,
     "india_jobs_at_bootstrap": 7,
     "stack_india_jobs_at_bootstrap": 3,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 0,
+    "inactive_since": "2026-11-24"
   },
   {
     "name": "Anyscale",
@@ -441,7 +442,7 @@
     "stack_india_jobs_at_bootstrap": 2,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 1
   },
   {
     "name": "Atlys",
@@ -693,7 +694,7 @@
     "stack_india_jobs_at_bootstrap": 1,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 1
   },
   {
     "name": "Elastic",
@@ -1291,12 +1292,13 @@
     "ats": "greenhouse",
     "board_slug": "thoughtworks",
     "discovered_via": "candidate list (India-hiring companies), slug verified via API",
-    "active": true,
+    "active": false,
     "india_jobs_at_bootstrap": 2,
     "stack_india_jobs_at_bootstrap": 0,
     "verified": "2026-10-14",
     "first_scanned": "2026-10-14",
-    "kept_jobs_total": 0
+    "kept_jobs_total": 0,
+    "inactive_since": "2026-11-24"
   },
   {
     "name": "Vercel",
